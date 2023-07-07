@@ -1,7 +1,7 @@
 # kastalia
 Kastalia Knowledge Management System
 
-#Installation
+# Installation
 ./install.sh
 
 # Licence
