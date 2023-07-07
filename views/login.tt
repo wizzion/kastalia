@@ -1,0 +1,10 @@
+<form method="post" action="/login">
+<div style="margin:auto;width:60vw;">
+		Login: 
+	<input style="width: 300px; height:80px;font-size:40px;" type="text" name="login"/>
+	Password: <input style="width:300px; height:80px;font-size:40px;" type="password" name="pwd"/>
+	<input type="submit" name="Log in!" value=";-)"/>
+	<input type="hidden" name="dispatch" value="<%dispatch%>"/>
+</div>
+</form>
+

@@ -1,0 +1,22 @@
+{
+  "short_name": "fibel.digital",
+  "name": "digitale Fibel, version 0.42",
+  "icons": [
+    {
+      "src": "/assets/fibel_rectangle.png",
+      "type": "image/png",
+      "sizes": "1264x446"
+    },
+    {
+      "src": "/assets/fibel_square.png",
+      "type": "image/png",
+      "sizes": "331x331"
+    }
+  ],
+  "start_url": "/auth",
+  "background_color": "#FFF",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#FFF",
+  "orientation": "landscape-primary"
+}

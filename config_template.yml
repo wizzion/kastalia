@@ -1,0 +1,74 @@
+#set up variables and copy this file config_template.yml to config.yml
+# Your application's name
+appname: "Kastalia KMS"
+environment: "production"
+
+# The default layout to use for your application (located in
+# views/layouts/main.tt)
+layout: "main"
+
+# when the charset is set to UTF-8 Dancer2 will handle for you
+# all the magic of encoding and decoding. You should not care
+# about unicode within your app when this setting is set (recommended).
+charset: "UTF-8"
+
+# template engine
+# simple: default and very basic template engine
+# template_toolkit: TT
+
+#template: "simple"
+logger: 'file'
+log: 'error'
+#template: "Xslate"
+#engines:
+# Xslate:
+#  syntax: 'TTerse'
+
+session: Memcached
+
+template: "template_toolkit"
+engines:
+ template:
+  template_toolkit:
+   start_tag: '<%'
+   end_tag:   '%>'
+ session:
+    Memcached:
+      memcached_servers:
+        - 127.0.0.1:11211
+#        - /tmp/memcache.socket
+
+plugins:
+ Ajax:
+  content_type: 'application/json'
+ Database:
+  connections:
+   knots:
+#     driver: SQLite
+#     database: 'slide.sqlite'
+      driver: 'Pg'
+      database: 'kastalia_db'
+      dbi_params:
+        RaiseError: 0
+        PrintError: 0
+        AutoCommit: 1
+        pg_enable_utf8: 1
+
+main_route: '/1/knot'
+show_errors: 1
+account_admins: 'admin1|admin2'
+ldap_pass: ''
+ldap_base: 'dc=,dc='
+ldap_ou2: 'ou=apprentice'
+ldap_ou1: 'ou=fellow'
+ldap_bind_cn: 'cn=admin'
+ldap_host: '127.0.0.1'
+
+mail_user: ''
+mail_pwd: ''
+mail_smtp_host: ''
+mail_smtp_port: 
+
+APPURL: ''
+DEFAULT_TEMPLATE: ''
+KASTALIA_DIR: ''

@@ -1,0 +1,455 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>
+			<%knot.knot_name%>
+		</title>
+
+		<link rel="stylesheet" href="/reveal.js/css/reset.css">
+		<link rel="stylesheet" href="/css/reveal.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? '/reveal.js/css/print/pdf.css' : '/reveal.js/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+<style>
+@import url(source-sans-pro.css);
+section.has-light-background, section.has-light-background h1, section.has-light-background h2, section.has-light-background h3, section.has-light-background h4, section.has-light-background h5, section.has-light-background h6 {
+  color: #222; }
+
+/*********************************************
+ * GLOBAL STYLES
+ *********************************************/
+
+* { text-shadow: 0px 0px #fff}
+@font-face { font-family:"Cyberpunk"; src:url(/Cyberpunk.otf);}
+@font-face { font-family:"Matrix"; src:url(/matrix.ttf);}
+@font-face { font-family:"DotMatrix"; src:url(/DOTMATRI.TTF);}
+
+body {
+  background: #000;
+  background-color: #000; }
+
+.reveal {
+  font-family: DotMatrix;
+  font-size: 42px;
+  font-weight: normal;
+  color: #6dae42; }
+
+::selection {
+  color: #6dae42;
+  background: #bee4fd;
+  text-shadow: none; }
+
+::-moz-selection {
+  color: #6dae42;
+  background: #bee4fd;
+  text-shadow: none; }
+
+.reveal .slides section,
+.reveal .slides section > section {
+  line-height: 1.3;
+  font-weight: inherit;
+ }
+
+/*********************************************
+ * HEADERS
+ *********************************************/
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  margin: 0 0 20px 0;
+  color: #6dae42;
+/*  font-family: "Source Sans Pro", Helvetica, sans-serif;*/
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  text-shadow: 0px 0px #fff;
+  word-wrap: break-word; }
+
+.reveal h1 {
+  font-size: 2.5em; }
+
+.reveal h2 {
+  font-size: 1.4em; }
+
+.reveal h3 {
+  font-size: 1.2em; }
+
+.reveal h4 {
+  font-size: 1em; }
+
+
+/*********************************************
+ * OTHER
+ *********************************************/
+.reveal p {
+  margin: 20px 0;
+  line-height: 1.3; }
+
+
+/* Ensure certain elements are never larger than the slide itself */
+.reveal img,
+.reveal video,
+.reveal iframe {
+  max-width: 95%;
+ }
+
+.reveal strong,
+.reveal b {
+  font-weight: bold; }
+
+.reveal em {
+  font-style: italic; }
+
+.reveal ol,
+.reveal dl,
+.reveal ul {
+  display: inline-block;
+  text-align: left;
+  margin: 0 0 0 1em; }
+
+.reveal ol {
+  list-style-type: decimal; }
+
+.reveal ul {
+  list-style-type: disc; }
+
+.reveal ul ul {
+  list-style-type: square; }
+
+.reveal ul ul ul {
+  list-style-type: circle; }
+
+.reveal ul ul,
+.reveal ul ol,
+.reveal ol ol,
+.reveal ol ul {
+  display: block;
+  margin-left: 40px; }
+
+.reveal dt {
+  font-weight: bold; }
+
+.reveal dd {
+  margin-left: 40px; }
+
+.reveal blockquote {
+  display: block;
+  position: relative;
+  width: 70%;
+  margin: 20px auto;
+  padding: 5px;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2); }
+
+.reveal blockquote p:first-child,
+.reveal blockquote p:last-child {
+  display: inline-block; }
+
+.reveal q {
+  font-style: italic; }
+
+.reveal pre {
+  display: block;
+  position: relative;
+  width: 90%;
+  margin: 20px auto;
+  text-align: left;
+  font-size: 0.55em;
+  font-family: monospace;
+  line-height: 1.2em;
+  word-wrap: break-word;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15); }
+
+.reveal code {
+  font-family: monospace;
+  text-transform: none; }
+
+.reveal pre code {
+  display: block;
+  padding: 5px;
+  overflow: auto;
+  max-height: 400px;
+  word-wrap: normal; }
+
+.reveal table {
+  margin: auto;
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+.reveal table th {
+  font-weight: bold; }
+
+.reveal table th,
+.reveal table td {
+  text-align: left;
+  padding: 0.2em 0.5em 0.2em 0.5em;
+  border-bottom: 1px solid; }
+
+.reveal table th[align="center"],
+.reveal table td[align="center"] {
+  text-align: center; }
+
+.reveal table th[align="right"],
+.reveal table td[align="right"] {
+  text-align: right; }
+
+.reveal table tbody tr:last-child th,
+.reveal table tbody tr:last-child td {
+  border-bottom: none; }
+
+.reveal sup {
+  vertical-align: super;
+  font-size: smaller; }
+
+.reveal sub {
+  vertical-align: sub;
+  font-size: smaller; }
+
+.reveal small {
+  display: inline-block;
+  font-size: 0.6em;
+  line-height: 1.2em;
+  vertical-align: top; }
+
+.reveal small * {
+  vertical-align: top; }
+
+/*********************************************
+ * LINKS
+ *********************************************/
+.reveal a {
+  color: #42affa;
+  text-decoration: none;
+  -webkit-transition: color .15s ease;
+  -moz-transition: color .15s ease;
+  transition: color .15s ease; }
+
+.reveal a:hover {
+  color: #8dcffc;
+  text-shadow: none;
+  border: none; }
+
+.reveal .roll span:after {
+  color: #6dae42;
+  background: #068de9; }
+
+.fragment { 
+
+text-align:left; 
+    display: list-item;          
+    list-style-type: disc;       
+    list-style-position: inside;
+	color: #6dae42;
+}
+
+/*********************************************
+ * IMAGES
+ *********************************************/
+.reveal section img {
+  margin: 15px 0px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.logos {
+	border:none !important;
+	position: absolute;
+	top: -50px;
+}
+.reveal section img.plain {
+  border: 0;
+  box-shadow: none; }
+
+.reveal a img {
+  -webkit-transition: all .15s linear;
+  -moz-transition: all .15s linear;
+  transition: all .15s linear; }
+
+.reveal a:hover img {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #42affa;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.55); }
+
+/*********************************************
+ * NAVIGATION CONTROLS
+ *********************************************/
+.reveal .controls {
+  color: #6dae42; }
+
+/*********************************************
+ * PROGRESS BAR
+ *********************************************/
+.reveal .progress {
+  background: rgba(0, 0, 0, 0.2);
+  color: #42affa; }
+
+.reveal .progress span {
+  -webkit-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+  -moz-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+  transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985); }
+
+html.dimbg .slide-background {
+	opacity: 1 !important;
+}
+/*********************************************
+ * PRINT BACKGROUND
+ *********************************************/
+@media print {
+  .backgrounds {
+    background-color: #fff; } }
+</style>
+</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section <%if a.reveal_title_bg_url%>data-background-image="<%a.reveal_title_bg_url%>"<%end%>  <%if a.reveal_title_iframe_url%>data-background-iframe="<%a.reveal_title_iframe_url%>"<%end%>>
+					<!--<h1><%knot.knot_name%></h1>-->
+					<%knot.knot_content%>
+					<!--
+					<img class="logos" style="z-index: 23; margin-top: 20px; left:0px;" src="/community/data/6118.udk-berlin.png"/>
+					<img class="logos" style="z-index:23; right: 0px;" src="/community/data/6118.ecdf_logo.png"/>
+					-->
+					<%if a.event_logo_url%>
+						<img class="logos" style="z-index: 23; width: 15vw; right: 300px; top: 10px;" src="<%a.event_logo_url%>"/>
+					<%end%>
+				</section>	
+
+				<% FOREACH slide IN knot.knot_id.get_2generations %>
+					<section>
+						<section <%if slide.reveal_title_bg_url%>data-background-image="<%slide.reveal_title_bg_url%>"<%end%>  <%if slide.reveal_title_iframe_url%>data-background-iframe="<%slide.reveal_title_iframe_url%>"<%end%>> 
+							<h1 contenteditable="true"><%slide.knot_name%></h1>
+							<%if slide.reveal_title_img_down%>
+								<img src="<%slide.reveal_title_img_down%>"/>
+							<%end%>
+							<%if slide.reveal_title_bg_url and slide.collaboration%>
+								<div style="">(with <%slide.collaboration%>)</div>
+							<%end%>
+						</section>
+				<%if slide.knot_content or slide.img_url or slide.video_url or slide.fulltext_url%>
+							<section  contenteditable="true" <%if slide.reveal_content_bg_url%>data-background-image="<%slide.reveal_content_bg_url%>"<%end%> <%if slide.reveal_content_iframe_url%>data-background-iframe="<%slide.reveal_content_iframe_url%>"<%end%> <%if slide.reveal_md%>data-markdown<%end%>>
+							<%slide.knot_content%>
+							<%if slide.reveal_content_img_down%>
+								<img src="<%slide.reveal_content_img_down%>"/>
+							<%end%>
+							<%if slide.img_url%>
+								<img src="<%slide.img_url%>"/>
+							<%end%>
+							<%if slide.img_licence%>
+								<div style="text-shadow:0px 0px; position:absolute;top: -40vh; right:1vw; font-size:24px;"><%slide.img_licence%></div>
+							<%end%>
+
+							</section>
+							<%end%>
+						
+							<%if slide.video_url%>
+							<section> 
+								<video controls muted src="<%slide.video_url%>" style="width:100%; height:100%;"/>
+									<!--<video preload='none' controls muted src="<%slide.video_url%>" style="width:100%; height:100%;"/>-->
+							</section>
+							<%end%>
+		
+							<%if slide.fulltext_url%>
+							<section> 
+								<iframe src="<%slide.fulltext_url%>" type="application/pdf" style="width:100%; height:900px;"></iframe>
+							</section>
+							<%end%>
+						<%if slide.depth==2%>
+							<%foreach urenkel in slide.knot_id.get_children%>
+						<section <%if urenkel.reveal_title_bg_url%>data-background-image="<%urenkel.reveal_title_bg_url%>"<%end%>  <%if urenkel.reveal_title_iframe_url%>data-background-iframe="<%urenkel.reveal_title_iframe_url%>"<%end%>> 
+							<h1 contenteditable="true"><%urenkel.knot_name%></h1>
+							<%if urenkel.reveal_title_img_down%>
+								<img src="<%urenkel.reveal_title_img_down%>"/>
+							<%end%>
+							<%if urenkel.reveal_title_bg_url and urenkel.collaboration%>
+								<div style="">(with <%urenkel.collaboration%>)</div>
+							<%end%>
+						</section>
+				<%if urenkel.knot_content or urenkel.img_url or urenkel.video_url or urenkel.fulltext_url%>
+							<section <%if urenkel.reveal_content_bg_url%>data-background-image="<%urenkel.reveal_content_bg_url%>"<%end%> <%if urenkel.reveal_content_iframe_url%>data-background-iframe="<%urenkel.reveal_content_iframe_url%>"<%end%> <%if urenkel.reveal_md%>data-markdown<%end%>>
+							<%urenkel.knot_content%>
+							<%if urenkel.reveal_content_img_down%>
+								<img src="<%urenkel.reveal_content_img_down%>"/>
+							<%end%>
+							<%if urenkel.img_url%>
+								<img src="<%urenkel.img_url%>"/>
+							<%end%>
+							<%if urenkel.img_licence%>
+								<div style="text-shadow:0px 0px; position:absolute;top: -40vh; right:1vw; font-size:24px;"><%urenkel.img_licence%></div>
+							<%end%>
+
+							</section>
+							<%end%>
+						
+							<%if urenkel.video_url%>
+							<section> 
+								<video controls muted src="<%urenkel.video_url%>" style="width:100%; height:100%;"/>
+									<!--<video preload='none' controls muted src="<%urenkel.video_url%>" style="width:100%; height:100%;"/>-->
+							</section>
+							<%end%>
+		
+							<%if urenkel.fulltext_url%>
+							<section> 
+								<iframe src="<%urenkel.fulltext_url%>" type="application/pdf" style="width:100%; height:900px;"></iframe>
+							</section>
+							<%end%>
+	
+							<%end%>
+						<%end%>
+
+
+					</section>
+
+				<%end%>
+			</div>
+		</div>
+
+		<!--	<script src="/reveal.js/js/reveal.js"></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.1.0/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+     controls: true,
+        progress: true,
+        history: true,
+	width:<%if a.reveal_width%><%a.reveal_width%><%else%>1920<%end%>,
+	height:<%if a.reveal_height%><%a.reveal_height%><%else%>1200<%end%>,
+	margin: 0.1,
+        transition: 'zoom', // none/fade/slide/convex/concave/zoom
+        slideNumber: 'c/t',
+        controlsLayout: 'bottom-right',
+	embedded:true,
+        showSlideNumber : 'speaker',
+				dependencies: [
+					{ src: '/reveal.js/plugin/markdown/marked.js' },
+					{ src: '/reveal.js/plugin/markdown/markdown.js' },
+					{ src: '/reveal.js/plugin/notes/notes.js', async: true },
+					{ src: '/reveal.js/plugin/highlight/highlight.js', async: true }
+				]
+			});
+Reveal.addEventListener( 'ready', function( event ) {
+  //Reveal.slide(1, 0); //go to slide horizontal / vertical
+} )
+
+		</script>
+		<!--<script src="https://0.teacher.solar:777/reveal-hooks.js"></script>-->
+	</body>
+</html>
+

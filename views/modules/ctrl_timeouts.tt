@@ -1,0 +1,30 @@
+<script>
+	var timeouts=[];
+	var Timer = function(callback, delay) {
+	    var timerId, start, remaining = delay;
+
+	    this.pause = function() {
+		window.clearTimeout(timerId);
+		remaining -= Date.now() - start;
+	    };
+
+	    this.resume = function() {
+		start = Date.now();
+		window.clearTimeout(timerId);
+		//timerId = window.new Timer(callback, remaining);
+		timerId = window.setTimeout(callback, remaining);
+
+	    };
+
+	    this.stop = function() {
+		window.clearTimeout(timerId);
+	    }
+	    this.resume();
+	};
+
+	function audiotext_pause() {
+			for (var i=0; i<timeouts.length; i++) {
+			    timeouts[i].pause();
+			}
+	}
+</script>

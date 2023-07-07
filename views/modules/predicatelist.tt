@@ -1,0 +1,15 @@
+		<option value="is_parent">is_parent</option>
+		<option value="contains">contains</option>
+		<option value="illustrates">illustrates</option>
+		<option value="translates">translates</option>
+		<option value="is_uttered_as">is_uttered_as</option>
+		<option value="is_linked">is_linked</option>
+		<option value="is_member">is_member</option>
+		<option value="has_property">has_property</option>
+		<option value="has_answer">has_answer</option>
+		<option value="has_bookmark">has_bookmark</option>
+		<option value="has_session">has_session</option>
+		<option value="created_by">created_by</option>
+<!--		<option value="display_priority">display_priority</option>
+		<option value="display_duration">display_duration</option>-->
+

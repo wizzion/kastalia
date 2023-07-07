@@ -1,0 +1,148 @@
+<div id="menu_generic" class="menu">
+  <ul>
+<li style="font-size:1em"><a href='/'>🏠 Hauptseite</a>
+<%t='login'%><%login=t.get_session_key%>
+<%if login%>
+	<li style="font-size:1em;"><a href='/self'>🪞 <%login%></a> (<%score%> <%collects%>)</li>
+	<li style="font-size:1em;"><a href='/bookmarks'>🔖 bookmarks</a></li>
+	<li style="font-size:1em;"><a href='/logout'>🔒 abmelden</a></li>
+<%else%>
+	<li style="font-size:1em";><a href='/auth'>🔓 anmelden</a></li>
+<%end%>
+<%#if template_name!="palope"%>
+<!--
+		<li>
+			<select id="vorlageActions" ">
+				<option selected disabled>Übung</option>
+				<option value="read">👄 lesen</option>
+				<option value="play">👂 hören</option>
+				<option value="paaren">🎴 paaren</option>
+			</select>
+		</li>
+-->
+	<li>
+		<select id="caseSelect">
+			<option selected disabled>Buchstaben</option>
+			<option value="uppercase">alle groß</option>
+			<option value="lowercase">alle klein</option>
+			<option value="capitalize">erste groß</option>
+			<option value="none">original</option>
+		</select>
+	<li>
+		<select id="fontSelect" ">
+			<option selected disabled>Schriftart</option>
+			<!--<option value="ChristmasEve">ChristmasEve</option>-->
+			<option value="schola">Schola</option>
+			<option value="OpenDyslexic">OpenDyslexic</option>
+			<option value="DeutscheNormalschrift">Normalschrift</option>
+			<option value="Ruritania">Ruritania</option>
+			<option value="schuldruck">SchulDruck</option>
+		</select>
+	</li>
+<!--
+	<li>
+		<select id="umlautSelect" ">
+			<option selected disabled>Umlaut</option>
+			<option value="short">Ä / Ö / Ü</option>
+			<option value="long">AE / OE / UE</option>
+		</select>
+	</li>
+-->
+<%#end%>
+	<div class="bottom-right-corner" style="font-size:12px; color:black;">
+		<label>Licence 
+			<%if a.licence%>
+				<%a.licence%>
+			<%else%>
+				CC BY-NC-SA 4.0
+			<%end%>
+		</label>
+		<a target="_blank" href="/2738/presentation1">Rechtliche Information , Impressum, didaktische Anmerkung etc.</a>
+	</div>
+		
+  </ul>
+</div>
+
+ <script>
+	
+$("#refresh").click(function() {
+	location.reload();
+});
+$("#hamburger_generic").click(function() {
+  $("#hamburger_generic").css('visibility','hidden');
+  $('#cross_generic').css('visibility','visible');
+  $("#menu_generic").slideToggle();
+  $("#menu_generic").css('visibility','visible');
+
+  /* make a function out of this */
+  $("#menu_recorder").css('visibility','hidden');
+  $("#hamburger_read").css('visibility','visible');
+  $("#cross_read").css('visibility','hidden');
+
+  $("#menu_paaren").css('visibility','hidden');
+  $("#hamburger_paaren").css('visibility','visible');
+  $("#cross_paaren").css('visibility','hidden');
+
+  $("#menu_play").css('visibility','hidden');
+  $("#hamburger_play").css('visibility','visible');
+  $("#cross_play").css('visibility','hidden');
+});
+$("#cross_generic").click(function() {
+  $(this).css('visibility','hidden');
+  $('#hamburger_generic').css('visibility','visible');
+  $("#menu_generic").slideToggle();
+});
+
+	$('#topicSelect').change(function() {
+		console.log('/'+$("#topicSelect option:selected").val());
+		window.location.href='/'+$("#topicSelect option:selected").val();
+	});
+/*
+	$('#umlautSelect').change(function() {
+		umlaut=$("#umlautSelect option:selected").val();
+		console.log("BEFORE");
+		changeUmlaut(umlaut);
+		console.log("AFTER");
+		$.ajax({                                            
+			 url: '/api/memcache/umlaut/'+umlaut,                        
+			 async:false,
+			 success: function(data)          
+			 { 
+				console.log("DAT"+data);
+			 },
+		});
+	});
+*/
+
+	$('#caseSelect').change(function() {
+		var text_transform=this.value;
+		$.ajax({                                            
+			 url: '/api/memcache/text_transform/'+text_transform,                        
+			 async:false,
+			 success: function(data)          
+			 { 
+				console.log("DAT"+data);
+			 },
+		});
+
+		$('*').css('text-transform',text_transform);
+		fit_options(150);
+	});
+
+
+	$('#fontSelect').change(function() {
+		var font=this.value;
+		$.ajax({                                            
+			 url: '/api/memcache/font/'+font,                        
+			 async:false,
+			 success: function(data)          
+			 { 
+				console.log("DAT"+data);
+			 },
+		});
+		console.log(font);
+		$('*').css('font-family',font);
+		textFit($(".option"),{maxFontSize:200});
+	});
+
+</script>

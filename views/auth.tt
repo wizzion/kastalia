@@ -1,0 +1,23 @@
+<%include modules/HMPL_brahma.tt%>
+			<section phase="1" knot_id="<%knot.knot_id%>" class="slide" id="folio-<%knot.knot_id%>-p1">
+				<div style='display:none;' id="knot_<%knot.knot_id%>_content"><%knot.knot_content%></div>
+				<div style='display:none;' id="knot_<%knot.knot_id%>_parent"><%knot.knot_id%></div>
+				<div class="illustration-img illustration-<%knot.knot_id%>" style="float:right;background-repeat:no-repeat;height:61vh;width:30vw;background-size:contain;margin-right:3vw;" src=""/></div>
+				<a title="Klicken und halten Sie während des Sprechens, lassen Sie los, wenn Sie fertig sind." style="display:block; width:61vw;height:61vh;padding-left:3vw;font-size:20pt;margin-top:15vh;" class="utterance" id="greeting">
+				    <%id=0%>
+				    <%foreach word IN knot.knot_content.get_words%>
+					 <%if word !='_' and word!=''%>
+					    <div style="color:<%#prosody.$id%>;<%if previous_word=='_'%>margin-left:0vw;<%end%>" seq_id="<%id%>" class="word" id="w_<%knot.knot_id%>_<%id%>"><%word.process%></div>
+						<%id=id+1%>
+					<%end%>
+					<%previous_word=word%>
+				    <%end%>
+<!--
+					<audio class="bottom-left-corner logos" id="audio_<%knot.knot_id%>" controls>
+						<source id="ogg_src" type="audio/ogg" src="/audio/<%knot.knot_id%>.ogg"/>
+						<source id="mp3_src" type="audio/mp3" src="/audio/<%knot.knot_id%>.mp3"/>
+					</audio>
+-->
+				</a>
+			</section>
+<%include modules/shiva.tt%>

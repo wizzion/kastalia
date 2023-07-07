@@ -1,0 +1,209 @@
+<!doctype html>
+<%include modules/brahma.tt%>
+<!--
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>
+			<%knot.knot_name%>
+		</title>
+
+		<link rel="stylesheet" href="/css/reset.css">
+		<link rel="stylesheet" href="/css/reveal.css">
+		<link rel="stylesheet" href="/css/baumhaus.css">
+	</head>
+-->
+
+		<link rel="stylesheet" href="/css/baumhaus.css">
+		<link rel="stylesheet" href="/css/modal.css">
+		<link rel="stylesheet" href="/css/reveal.css">
+	<style>
+	<%if knot.background_color%>
+	body {
+		background-color: <%knot.background_color%>; 
+	}
+	img {background-color:white;}
+	<%end%>
+	<%if knot.color%>
+	.reveal h1,.reveal *,.fragment {
+		color: <%knot.color%>; 
+	}
+	<%end%>
+				       
+		
+	section: {z-index:-1000}
+	</style>
+	<body>
+
+		<!--<img style="z-index:23; left: 1vw; position:fixed;top:2vh;height:9vh;" src="/images/baumhaus_logo.png"/>-->
+	<%include modules/modal.tt%>
+
+		<div class="reveal">
+			<div class="slides">
+				<section id="folio-<%knot.knot_id%>" data-background-iframe="/<%knot.knot_id%>/arbre" data-background-interactive>
+				</section>	
+
+				<% FOREACH slide IN knot.knot_id.get_3generations %>
+					<section id="folio-<%slide.knot_id%>" <%if slide.reveal_title_bg_url%>data-background-image="<%slide.reveal_title_bg_url%>"<%end%><%if slide.reveal_title_iframe_url%>data-background-interactive data-background-iframe="<%slide.reveal_title_iframe_url%>"<%end%>> 
+							<div>
+								<h1 style="font-size:2.5em;">
+									<%slide_ancestors=slide.knot_name.split('\+\+')%>
+									<%slide_ancestors.last%>
+								
+								</h1>
+							</div>
+							<%if slide.img_url%>
+								<div class="image" style="width:33vw;"> 
+									<img class="slide_img" src="<%slide.img_url%>" alt="<%slide.img_legend|uri%>"/>
+									<%if slide.img_legend%>
+										<p style="margin:10px; width:25vw; font-size:0.53em;"><%slide.img_legend%></p>
+									<%end%>
+								</div>
+							<%end%>
+							<div style="margin-top:1vh;width:61%;height:61%;position:absolute;" class="slide_content">
+								<%kc=slide.knot_content%>
+								<%kc%>
+							</div>
+							<%if slide.reveal_content_img_down%>
+								<div style="position:fixed;right:5vw;bottom:10vh; font-size:0.5em; width:550px;">
+									<img src="<%slide.reveal_content_img_down%>"/><br/>
+									<%slide.reveal_content_img_down%>
+								</div>
+							</section>
+							<%end%>
+							<%if slide.video_url%>
+							<section> 
+								<video preload='none' controls muted src="<%slide.video_url%>" style="width:100%; height:100%;"/>
+							</section>
+							<%end%>
+							<%if slide.fulltext_url%>
+							<section> 
+								<embed src="<%slide.fulltext_url%>" type="application/pdf" style="width:100%; height:100%;"></embed>
+							</section>
+							<%end%>
+						</section>
+						<%if slide.depth==2%>
+								<%foreach urenkel in slide.knot_id.get_children%>
+								<section <%if urenkel.reveal_title_bg_url%>data-background-image="<%urenkel.reveal_title_bg_url%>"<%end%>  <%if urenkel.reveal_title_iframe_url%>data-background-iframe="<%urenkel.reveal_title_iframe_url%>"<%end%> data-background-interactive> 
+									<h1>
+										<%urenkel_ancestors=urenkel.knot_name.split('\+\+')%>
+										<%urenkel_ancestors.last%>
+									</h1>
+									<%if urenkel.ogg_url%>
+									<audio controls src="<%urenkel.ogg_url%>" height="100" width="100" style="float:left;"></audio><br/>
+									<%end%>
+	
+									<div><%urenkel.knot_content%></div>
+									<%if urenkel.img_url%>
+										<img src="<%urenkel.img_url%>" style="float:right;"/>
+									<%end%>
+								</section>
+									<%foreach ururenkel in urenkel.knot_id.get_children%>
+										<section <%if ururenkel.reveal_title_bg_url%>data-background-image="<%ururenkel.reveal_title_bg_url%>"<%end%>  <%if ururenkel.reveal_title_iframe_url%>data-background-iframe="<%ururenkel.reveal_title_iframe_url%>"<%end%> data-background-interactive> 
+											<h1>
+												<%ururenkel_ancestors=ururenkel.knot_name.split('\+\+')%>
+												<%ururenkel_ancestors.last%>
+											</h1>
+											<%if ururenkel.ogg_url%>
+												<audio controls src="<%ururenkel.ogg_url%>" height="100" width="100" style="float:left;"></audio><br/>
+											<%end%>
+			
+											<div><%ururenkel.knot_content%></div>
+											<%if ururenkel.img_url%>
+												<img src="<%ururenkel.img_url%>" style="float:right;"/>
+											<%end%>
+										</section>
+										<%end%>	
+									<%end%>
+							<%end%>
+							</section>
+
+						
+				<%end%>
+			</div>
+		</div>
+		<script src="/js/reveal.js"></script>
+		<script src="/js/head.min.js"></script>
+		<div id="disp"><canvas id="comp"></canvas></div>
+		<video id="video" autoplay width="300" style="display:none"></video>
+		<canvas id="canvas" style="width:300px;display:none;"></canvas>
+		<!--		<script src="/js/reveal_gesture.js"></script>-->
+
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+     controls: true,
+        progress: true,
+        history: true,
+	width:<%if a.reveal_width%><%a.reveal_width%><%else%>2160<%end%>,
+	height:<%if a.reveal_height%><%a.reveal_height%><%else%>1080<%end%>,
+	margin: 0,
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        slideNumber: 'c/t',
+        showSlideNumber : 'speaker',
+				dependencies: [
+/*					{ src: '/reveal.js/plugin/markdown/marked.js' },
+					{ src: '/reveal.js/plugin/markdown/markdown.js' },
+					{ src: '/reveal.js/plugin/notes/notes.js', async: true },
+					{ src: '/reveal.js/plugin/highlight/highlight.js', async: true }
+*/
+				]
+			});
+var modal = document.getElementById("myModal");
+var modalImg = document.getElementById("img01");
+var captionText = document.getElementById("caption");
+
+Reveal.addEventListener( 'ready', function( event ) {
+  //Reveal.slide(0, 0);
+  $( ".slide_img" ).on('click', function () {
+	  modal.style.display = "block";
+	  modalImg.src = this.src;
+	  captionText.innerHTML = unescape(this.alt);
+  });
+  $( ".close" ).on('click', function () {
+	modal.style="none";
+  });
+} )
+
+Reveal.on( 'slidechanged', event => {
+	slide=$(event.currentSlide);
+	content=slide.find('.slide_content');
+	image=slide.find('.image');
+	//console.log(slide.find('.fragment').length);
+	if (image) {
+		if (Math.random() < 0.5) {
+			image.css('float','left');		
+			image.css('margin-right','10%');		
+			content.css('float','right');
+			content.css('left','33%');
+		} else {
+			image.css('margin-left','5%');		
+			image.css('margin-right','5%');		
+			image.css('float','right');		
+			content.css('float','left');
+			content.css('left','5%');
+
+		}
+	}
+	if (!content.find('.fragment').length) {
+		textFit(content,{maxFontSize:200});
+	}
+
+});
+//window.addEventListener("mousedown", handleClick, false);
+//window.addEventListener("contextmenu", function(e) { e.preventDefault(); }, false);
+
+function handleClick(e) {
+	e.preventDefault();
+	if(e.button === 0) Reveal.next(); 
+	if(e.button === 2) Reveal.prev(); 
+}
+	</script>
+	</body>
+</html>
+

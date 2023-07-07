@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://fibel-digital/sitemap.txt

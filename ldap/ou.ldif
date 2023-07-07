@@ -1,0 +1,7 @@
+dn: ou=apprentice,dc=udk,dc=ai
+objectClass: organizationalUnit
+ou: apprentice
+
+dn: ou=fellow,dc=udk,dc=ai
+objectClass: organizationalUnit
+ou: fellow

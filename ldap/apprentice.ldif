@@ -1,0 +1,8 @@
+dn: cn=jozef-knecht,ou=apprentice,dc=kastalia,dc=org
+uid: jozef-knecht
+cn: jozef-knecth
+objectClass: inetOrgPerson
+givenName: Jozef
+sn: Knecht
+mail: knecht@kastalia.org
+userPassword: {SSHA}...............................

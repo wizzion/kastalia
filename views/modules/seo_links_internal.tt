@@ -1,0 +1,27 @@
+
+<!--making primer search-engine optimized ;) and browsable for non-javascript browsers as well-->
+
+<div id="linklist" style="display:none;">
+<%depth=0%>
+<%foreach ancestor in knot.knot_name.split('\+\+')-%>
+	<%if ancestor%>
+		<%if depth>0%>
+			<%path="$path++$ancestor"%>
+		<%else%>
+			<%path="$ancestor"%>
+		<%end%>
+		<a href="/<%path%>"><%path%></a>
+		<%depth=depth+1%>
+	<%end%>
+<%end%>
+	
+	<%foreach linkz in knot.knot_id.get_children_roulette%>
+		<a href="/<%linkz.knot_id%>/explore" text="<%linkz.knot_name%>"><%linkz.knot_name.replace('\+\+',' ')%> Kategorien erforschen</a>
+		<a href="/<%linkz.knot_name%>/explore" text="Fibel knot <%linkz.knot_id%>"><%linkz.knot_name.replace('\+\+',' ')%> Kategorien erforschen</a>
+		<a href="/<%linkz.knot_id%>/play" text="<%linkz.knot_name%>"><%linkz.knot_name.replace('\+\+',' ')%> Audiotext hören</a>
+		<a href="/<%linkz.knot_name%>/play" text="Fibel knot <%linkz.knot_id%>"><%linkz.knot_name.replace('\+\+',' ')%> listen to audiotext</a>
+		<a href="/<%linkz.knot_id%>/paaren" text="<%linkz.knot_name%>"><%linkz.knot_name.replace('\+\+',' ')%> Memory spielen</a>
+		<a href="/<%linkz.knot_name%>/paaren" text="Primer knot <%linkz.knot_id%>"><%linkz.knot_name.replace('\+\+',' ')%> play memory game with primer knot <%linkz.knot_id%></a>
+	<%end%>
+</div>
+<!--end of SE-optimization-->

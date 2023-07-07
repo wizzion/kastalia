@@ -1,0 +1,108 @@
+{"knot_id":"11970",
+"knot_name":"0. Invitation to Kastalia Knowledge Management and Archivation System",
+"knot_content":"\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t<div><br></div><div><br></div><div><br></div><div><br></div><div><br></div><div><br></div><div>Invitation to Kastalia Knowledge Management and Archivation System</div><div>Daniel D. Hromada juniorprof. UdK-ECDF DigEd       CC BY-NC-SA</div>\n\t\t\t\n\t\t\t\n\t\t\t",
+	"attributes":"\"epoch\"=>\"1613908070\", \"public\"=>\"1\", \"creator\"=>\"daniel-hromada\", \"reveal_title_iframe_url\"=>\"https://kastalia.medienhaus.udk-berlin.de/6301/\""
+,"objects":[{"sub":"11970","obj":"11971","predicate":"is_parent","ord":"100"},{"sub":"11970","obj":"11972","predicate":"is_parent","ord":"90"},{"sub":"11970","obj":"11974","predicate":"is_parent","ord":"80"},{"sub":"11970","obj":"11977","predicate":"is_parent","ord":"70"},{"sub":"11970","obj":"11979","predicate":"is_parent","ord":"60"},{"sub":"11970","obj":"11992","predicate":"is_parent","ord":"1"}],
+"children":[
+	{
+	"knot_id":"11971",
+	"knot_name":"0. Relevancy for UdK & AG Online Lehre",
+	"knot_content":"\n\t\t\t\t\n\t\t\t\tKastalia KMAS will embelish Your study program with on-line, collaborative and potentially quite state-of-the-art* Einführungveranstaltung presentations.\n\t\t\t<div><br></div><div>* KMAS frontend runs in browser and whatever is possible in the browser is possible in Kastalia</div>",
+	"attributes":"\"epoch\"=>\"1613908278\", \"creator\"=>\"daniel-hromada\""
+	
+	
+	}
+,
+	{
+	"knot_id":"11972",
+	"knot_name":"1. Precursors",
+	"knot_content":"\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t<p class=\"fragment\">\"pedagogical province\" in Hesse's Glasperlenspiel :: https://en.wikipedia.org/wiki/The_Glass_Bead_Game#Castalia</p><p class=\"fragment\">activist and artist social network kyberia.sk</p><p class=\"fragment\">tradition of KuM &VK Einführungveranstaltungen</p>\n\t\t\t\n\t\t\t\n\t\t\t",
+	"attributes":"\"epoch\"=>\"1613908548\", \"creator\"=>\"daniel-hromada\""
+	,"objects":[{"sub":"11972","obj":"11973","predicate":"is_parent","ord":"1"}]
+	,"children":[
+		{
+		"knot_id":"11973",
+		"knot_name":" Einführungveranstaltung Examples",
+		"knot_content":"\n\t\t\t\t\n\t\t\t\t<p class=\"fragment\"><a href=\"https://kastalia.medienhaus.udk-berlin.de/kum\">kastalia.medienhaus.udk-berlin.de/kum</a></p><p class=\"fragment\"><a href=\"https://kastalia.medienhaus.udk-berlin.de/vk\">kastalia.medienhaus.udk-berlin.de/vk</a></p>\n\t\t\t",
+		"attributes":"\"epoch\"=>\"1613908803\", \"creator\"=>\"daniel-hromada\""
+		
+		
+		}
+	]
+	}
+,
+	{
+	"knot_id":"11974",
+	"knot_name":"2. Philosophy",
+	"knot_content":"<p class=\"fragment\">Kastalia is composed of \"knots\" which have attributes and relations (\"bounds\") to other \"knots\".</p>\r\n<p class=\"fragment\">Everything (e.g. user, institution, event, presentation slide, fairy tale, musical piece) is a knot.</p>\r\n<p class=\"fragment\">A knot is a \"Ding an sich\".&nbsp;</p>\r\n<p class=\"fragment\"><strong>Bounds are predicated.</strong> (hello sir Berners-Lee, hello Wikibase, hello \"semantic web\")</p>\r\n<p class=\"fragment\">A knot is presented to an observer (e.g. human user) by means of a template.</p>\r\n<p class=\"fragment\">Combination of a knot, other knots which are bound to it and a template yield \"Ding f&uuml;r uns\".</p>",
+	"attributes":"\"epoch\"=>\"1613909065\", \"creator\"=>\"daniel-hromada\""
+	,"objects":[{"sub":"11974","obj":"11975","predicate":"is_parent","ord":"100"},{"sub":"11974","obj":"11976","predicate":"is_parent","ord":"90"},{"sub":"11974","obj":"11991","predicate":"is_parent","ord":"1"}]
+	,"children":[
+		{
+		"knot_id":"11975",
+		"knot_name":"Note 0 :: Generativity of Kastalia KMAS",
+		"knot_content":"\n\t\t\t\t\n\t\t\t\tWhat we are dealing with here is a fairly strong generative system. <br><br>E.g. in case of N knots and M templates, one may obtain N*M different \"Ding für uns\".\n\t\t\t",
+		"attributes":"\"epoch\"=>\"1613909294\", \"creator\"=>\"daniel-hromada\""
+		
+		
+		}
+	,
+		{
+		"knot_id":"11976",
+		"knot_name":"Exercise 1 :: Different views on VK EV",
+		"knot_content":"Let's display the knot of \"Visual Communication\" study program by means of different templates listed in the \"views\" section of https://kastalia.medienhaus.udk-berlin.de/16",
+		"attributes":"\"epoch\"=>\"1613909867\", \"creator\"=>\"daniel-hromada\""
+		
+		
+		}
+	,
+		{
+		"knot_id":"11991",
+		"knot_name":"ou bien un petit peu de 3D ?",
+		"knot_content":"<a href=\"https://kastalia.medienhaus.udk-berlin.de/8014\">cube0 (VK) </a>",
+		"attributes":"\"epoch\"=>\"1614163497\", \"creator\"=>\"daniel-hromada\""
+		
+		
+		}
+	]
+	}
+,
+	{
+	"knot_id":"11977",
+	"knot_name":"3. Gegenwart",
+	"knot_content":"\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t<p class=\"fragment\">the UdK instance - currently contains cca 12000 knots - is supervised by Medienhaus IT-admin Frederik Mueller and is, for all practical purposes, independent from its inceptor</p><p class=\"fragment\">for the purpose of fibel.digital and \"open online learning\" teacher.solar projects another instance was deployed at baumhaus.digital and is further developped by my company wizzion.com UG</p><p class=\"fragment\">since 2021 it is possible to transfer \"knowledge branches\" between Kastalia instances</p>\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t",
+	"attributes":"\"epoch\"=>\"1613910829\", \"creator\"=>\"daniel-hromada\""
+	,"objects":[{"sub":"11977","obj":"11978","predicate":"is_parent","ord":"1"}]
+	,"children":[
+		{
+		"knot_id":"11978",
+		"knot_name":"fibel.digital example ",
+		"knot_content":"\n\t\t\t\t\n\t\t\t\t<p class=\"fragment\"><a href=\"https://fibel.digital/GermanFairyTales\">fibel.digital/GermanFairyTales</a></p><p class=\"fragment\"><a href=\"https://fibel.digital/AnDieFreude\">fibel.digital/AnDieFreude</a></p>\n\t\t\t",
+		"attributes":"\"epoch\"=>\"1613911130\", \"creator\"=>\"daniel-hromada\""
+		
+		
+		}
+	]
+	}
+,
+	{
+	"knot_id":"11979",
+	"knot_name":"4. Zukunft",
+	"knot_content":"\n\t\t\t\t\n\t\t\t\t<p class=\"fragment\">additional study programs ? (in case of interest please contact me ASAP)</p><p class=\"fragment\">UdK archive / NFDI4culture ?</p><p class=\"fragment\">versatile backend for plethora of not-yet-existing web-based knowledge bases (e.g. gardens.digital)</p><p class=\"fragment\">the most important web-based composition of my life</p>\n\t\t\t",
+	"attributes":"\"epoch\"=>\"1613911733\", \"creator\"=>\"daniel-hromada\""
+	
+	
+	}
+,
+	{
+	"knot_id":"11992",
+	"knot_name":"Thanks for Your attention",
+	"knot_content":"<div style=\"text-align: center;\">dh@udk-berlin.de</div>\r<br><div style=\"text-align: center;\">bildung.digital.udk-berlin.de</div>\r<br><div style=\"text-align: center;\">kastalia.medienhaus.udk-berlin.de</div>",
+	"attributes":"\"epoch\"=>\"1614164000\", \"creator\"=>\"daniel-hromada\""
+	
+	
+	}
+]
+}			
+
+

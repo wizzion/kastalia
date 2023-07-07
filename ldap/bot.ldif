@@ -1,0 +1,4 @@
+dn: ou=bot,dc=domain,dc=tld
+objectClass: organizationalUnit
+ou: bot
+

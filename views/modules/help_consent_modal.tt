@@ -1,0 +1,65 @@
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <ol>
+	    <li>You <span style="color:white;background-color:#c9493b">start the recording</span> with a start button (You can click on it, touch it, or simply move Your finger/cursor over it).</li>
+	    <li>Subsequently, You move the finger/cursor over the first syllable/word. <b><span style="color:green;">You pronounce the segment only when its background has green color.</span></b>
+	    <li>You gradually progress from syllable to syllable and segment to segment. You always start pronouncing certain segment only when it is green.</li>
+	    <li>Note that <span style='color:blue'>accentuated & long syllables are marked with blue color</span>, while <span style='background-color:green;color:gold'>short/non-accentuated syllables are marked with green color</span>.</li>
+	    <li>After You are done with the last syllable You move Your finger towards the <span style="color:white; background-color:#c9493b">stop button</span>. Then you can playback the whole recording, when you are satisfied you click on "Upload" and the next text appears.</li>
+    </ol>
+	<div class="video-embed">
+		<video width="61%" controls loop src="https://fibel.digital/audiotext.mp4"/>
+	</div>
+
+  </div>
+</div>
+<div id="consentModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+      	  <span class="close">&times;</span>
+	  In order to be fully compliant with European data-protection Law, we need Your explicit consent regarding use of Your voice data. Please choose one among following consent types:<br/><br/>
+    <ol>
+	    <li><b>Do not upload</b> :: You do not give us Your consent. Thus, no data will be uploaded from Your browser to our server. But You can still use the interface for testing purposes.
+		    <li><b>Only speech-to-text-models</b> :: Your recordings will become part of the corpus from which automatic speech recognition (ASR) models will be trained. Corpus itself will not be published but the final model will be published.
+			    <li><b>Only text-to-speech</b> :: Similar to previous option but this time, the resulting model will not be used for ASR but for synthesis of artificial voices.
+				    <li><b>STT & TTS</b> :: Both ASR and voice synthesis models could be trained from datasets containing Your recordings. Again, the recordings themselves will not be published.
+						    <li><b>Public Dataset</b> :: Your recordings will become part of a publicly available dataset. This is the most permissive option.
+    </ol>
+    Note that in all cases, Your recordings will be anonymized and asides voluntary gender / age / zodiac sign / mother language information no metadata is collected.
+  </div>
+</div>
+
+<script>
+$("#helpButton").click(function() {
+	console.log("modal");
+ 	modal.style.display = "block";
+});
+
+$("#consentInfo").click(function() {
+	consent_modal.style.display = "block";
+});
+
+// When the user clicks on <span> (x), close the modal
+$('.close').on('click',function() {
+  modal.style.display = "none";
+  consent_modal.style.display = "none";
+});
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+  if (event.target == consent_modal) {
+    consent_modal.style.display = "none";
+  }
+
+}
+
+</script>
+
+

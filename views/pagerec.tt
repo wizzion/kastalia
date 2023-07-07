@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Record utterance "<%knot.knot_name%>"</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/rec_style.css">
+    <link rel="stylesheet" media="screen" href="/css/deck/core/deck.core.css">
+    <link rel="stylesheet" type="text/css" href="/css/rec_style.css">
+
+  <!-- Required Modernizr file -->
+  <script src="/js/modernizr.custom.js"></script>
+
+    <script src="/js/jquery.min.js"></script>
+  </head>
+  <body style="width:95vw;height:95vh;margin:0px;padding:1vw;">
+<!--	<div id="content"><%knot.knot_content%></div> -->
+<script>var words={};</script>
+
+<div id="menu" style="position:fixed; top:1vh; right:1vw; width:30vw;">
+   Voice: <input type="text" id="voice_id" value="<%t='user'%><%t.get_session_key%>"/>&nbsp;
+   Container: <input type="text" id="container_id" value="<%t='container_id'%><%t.get_session_key%>"/>&nbsp;
+   Update existing child: <input type="checkbox" id="update_existing"/>
+<div id="audiomenu">
+	<div style='display:none; 'id="formats"></div>
+	<audio id="logos" controls></audio>
+	<textarea style="width:30vw; height:20vh;" id="timestamps"></textarea>
+	<!--<ol id="recordingsList"></ol>-->
+</div>
+
+</div>
+<div id="upld" style="position:fixed; bottom:1vh; right:1vw;">
+
+</div>
+     <button style='position:fixed;top:1vh;left:1vw;z-index:100;' id="recordButton"/>Start</button></div>
+    <button style='position:fixed;bottom:1vh;left:1vw;z-index:100;' id="stopButton"/>Stop</button></div>
+<script>
+	function w2u(words,utterance_id) {
+		var w=$('#bg-'+utterance_id).width();
+		var h=$('#bg-'+utterance_id).height();
+		for (let word of words) {
+			$('#utterance_'+utterance_id).append('<div style="background: rgba(0,0,0,0); border:solid 0pt green; color:rgba(0,0,0,0); margin-left:0px;margin-top:0px;z-index:100;position:fixed;top:'+((parseFloat(word['top'])*h)-3)+'px;left:'+((parseFloat(word['left'])*w)-5)+'px;width:'+parseFloat(word['width'])*w+'px;height:'+parseFloat(word['height'])*h+'px;" class="word" id="'+word['id']+'">'+word['ocr']+'</div>');
+		}
+	}
+	var words={}; //stores all jsons
+</script>
+<% FOREACH child IN knot.knot_id.get_2generations %>
+	<%if child.knot_id%>
+		<section knot_id="<%child.knot_id%>" class="slide" id="folio-<%child.knot_id%>">
+			<div style='display:none;' id="knot_<%child.knot_id%>_name"><%child.knot_name%></div>
+			<div style='display:none;' id="knot_<%child.knot_id%>_parent"><%child.knot_id%></div>
+			<!--<div class="utterance" id="utterance_<%child.knot_id%>" style="font-family:OpenDyslexic;width:100%;height:100%;margin-right:1vw;float:left;"></div>-->
+			<div class="utterance" style="display:none" id="utterance_<%child.knot_id%>"></div>
+			<div style="width:90vw;height:75vh;padding:0px;margin-top:5vh;" class="utterance" id="utterance_<%child.knot_id%>">
+			<script>words['<%child.knot_id%>']=[<%child.ocr%>];</script>
+			<img class="folio" onload="w2u(words['<%child.knot_id%>'],<%child.knot_id%>);" src="<%child.img_url%>" style="position:fixed;top:0px;left:0px;height:100vh;" id="bg-<%child.knot_id%>">
+		</section>
+	<%end%>
+<%end%>
+
+<script src="/js/rec.js"></script>
+<script src="/js/rec2.js"></script>
+<script>
+	function f2i (value) {
+		return value | 0;
+	}
+	var output='';
+	var actual_id=0;
+	var last_touched='';
+	var stopped=false;
+	var started=false;
+	function esc_quot(text)
+	{
+	    text=text.replace(/["\n]*/g,'');
+	    return text.replace("\"", "\\\"");
+	}
+
+	$(document).on('touchmove pointermove',function(e){
+	      if (stopped) {
+		   return;
+		}
+
+		var ele;
+		var clientX;
+		if (e.clientX) {
+			ele=document.elementFromPoint(e.clientX, e.clientY);
+			clientX=e.clientX;
+		} else if ('touches' in e) {
+			ele=document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+			clientX=e.touches[0].clientX;
+		}
+		else {
+			return;
+		}
+		console.log(clientX);
+	
+	      //var ele=document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+
+	      if (!started && ele.className=='word' && ele!=last_touched) {
+			output+='{"id":"'+ele.id+'","w":"'+esc_quot(ele.innerHTML)+'","start":"'+f2i(performance.now()-recordingStarted);
+			$(ele).css('border-width','2pt');
+			last_touched=ele;
+			started=true;
+	      }
+
+		if (started && clientX>last_touched.getBoundingClientRect().right) {
+				$(last_touched).css('border-color','green');
+				output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"},';
+				started=false;
+				console.log(output);
+			}
+	});
+	$("#stopButton").on('click pointerenter',function() {
+		//output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"}]';
+		if (started) {
+			output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"}';
+		}
+		output=output+']';
+		$("#timestamps").html(output);
+	});
+	$("#recordButton").on('click pointerenter mouseenter',function() {
+		//console.log("record button entered");
+		output='var words=[';
+		//$("#recordingsList").html('');
+		$('#recordingsList li').first().remove();
+		$("#timestamps").html('');
+	});
+
+	$("#logos").on('play', function() {
+	//$(".word").css('background-color','white');
+	var i=0;
+	//var offset=0;
+	var start=0;
+	eval(output);	
+	//alert(words);
+	for (let word of words) {
+		setTimeout(function () {$("#"+word.id).css("border-width","2pt");}, start);
+		setTimeout(function () {$("#"+word.id).css("border-width","0pt");}, word.stop);
+		i++;
+		start=word.stop;
+	}
+	});
+
+/*
+$(function() {
+	//textFit($('.utterance')[0],{maxFontSize:200});
+	$('.utterance').each(function() {
+		textFit(this,{maxFontSize:200});
+	});
+});
+*/
+
+
+</script>  
+
+<!-- Required JS files. -->
+<script src="/css/deck/core/deck.core.js"></script>
+<script src="/css/deck/extensions/status/deck.status.js"></script>
+<script>
+var actual_id=0;
+
+$(function() {
+    $.deck('.slide');
+    actual_id=$.deck('getSlide',0).attr('knot_id');
+    $('#utterance_'+actual_id).css('display','block');
+});
+$(document).bind('deck.change', function(event,from,to) {
+    old_id=$.deck('getSlide',from).attr('knot_id');
+    $('#utterance_'+old_id).css('display','none');
+    actual_id=$.deck('getSlide',to).attr('knot_id');
+    $('#utterance_'+actual_id).css('display','block');
+    $('#logos').attr('src','');
+    $('#timestamps').html('');
+    $('#upld').html('');
+});
+
+$( window ).resize(function() {
+	for (aid in words) {
+		console.log(aid);
+		$('#utterance_'+aid).empty();
+		w2u(words[aid],aid);
+	}
+});
+</script>
+
+</body></html>
+

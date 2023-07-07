@@ -1,0 +1,43 @@
+<div id="page">
+      <div id="sidebar">
+        <ul id="sidebar-items">
+          <li>
+            <h3>Kastalia KMS user_constructor</h3>
+          </li>
+        </ul>
+
+      </div>
+
+      <div id="content">
+        <div id="getting-started">
+          <h1>wizzion.com user account creation</h1>
+		
+<form method="post" action="/user_constructor">
+          <ol>
+            <li>
+              <h2>Specify the name of the person you want to register:</h2>
+                <br/>First name:<input name="firstname" type="text"><br/>Surname: <input name="surname" type="text">
+            </li>
+            <li>
+              <h2>Specify the project domain or organisation unit (OU) name:</h2>
+                <input name="ou" type="text">
+            </li>
+
+            <li>
+              <h2>Registrar's identity:</h2>
+                <br/>You are:<input value="<%registrar_login%>" name="registrar_login" type="text" readonly>
+            </li>
+
+            <li>
+                <h2>Submit the registration</h2>
+                <br/><center><input value="Register" type="submit"></center>
+		<p>
+			After submitting this form and if all goes well, a password for a newly created account will appear in the msg in top-left corner of Your screen. Copy it into clipboard and transfer it to the registered person by some safe means (e.g. no gmail).
+		</p>
+            </li>
+
+          </ol>
+</form>
+        </div>
+      </div>
+    </div>

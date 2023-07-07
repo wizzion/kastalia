@@ -1,0 +1,39 @@
+<div id="page">
+      <div id="content">
+        <div id="getting-started">
+          <h1>wizzion.com user credential update</h1>
+		
+<form method="post" action="/newpwd">
+          <ol>
+            <li>
+              <h2>Specify Your login:</h2>
+                <input name="login" value="<%registrar_login%>" type="text">
+            </li>
+            <li>
+              <h2>Specify the project domain:</h2>
+                <input name="ou" type="text" value="m3x">
+            </li>
+            <li>
+              <h2>Current password:</h2>
+                <input name="pwd" type="password">
+            </li>
+
+
+            <li>
+              <h2>New password:</h2>
+                <input name="new_pwd" type="password">
+            </li>
+
+
+            <li>
+                <h2>Update password</h2>
+                <br/><center><input value="Update!" type="submit"></center>
+		<p>
+		</p>
+            </li>
+
+          </ol>
+</form>
+        </div>
+      </div>
+    </div>

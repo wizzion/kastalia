@@ -1,0 +1,39 @@
+/* CSS Kastalia UdK Medienhaus, author: Daniel D. Hromada, licence: CC BY-NC-SA*/
+* {
+    box-sizing: border-box;
+}
+.header, .footer {
+    background-color: grey;
+    color: white;
+    padding: 15px;
+}
+.column {
+    float: left;
+    padding: 15px;
+}
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.menu {
+    width: 30vw;
+}
+.content {
+	width:60vw;
+}
+ul {
+    margin: 0;
+    list-style-type:none;
+    padding-inline-start:unset;
+}
+.menu li {
+    padding: 8px;
+    margin-bottom: 8px;
+    /*background-color: #33b5e5;*/
+    color: white;
+    /*text-shadow: 1px 1px #d82742;*/
+}
+.menu li:hover {
+    background-color: #0099cc;
+}

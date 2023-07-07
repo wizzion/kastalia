@@ -1,0 +1,38 @@
+
+		<div style="position:fixed;bottom:3vh; right:10vw;" style="font-size:min(3vw,3vh);line-height:normal;" id="score"></div>
+		<script>
+			if (score) {
+				$("#score").html(score.toString()+" "+collects);
+			}
+		</script>
+
+
+<%include modules/ctrl_buttons.tt%> 
+<%include modules/ctrl_keyboard.tt%> 
+<%if template_name=='palope' or template_name=='paloperec' or template_name=='play'%><%include modules/ctrl_timeouts.tt%><%end%>
+<%if template_name=='learn' or template_name=='test' or template_name=='auth'%><%include modules/HMPL_shiva.tt%><%end%>
+
+<%if template_name=='bounds' or template_name=='knot'%>
+<script>
+	$('.delete_bound').click(function(e) {                    
+	  var bound_id = $(this).attr('bid');
+	  if (confirm("You are planning to destroy relation "+bound_id+" between two knots. Are You sure You know what You are doing?")) {
+		  $.post("/destroy_bound/", {bid:bound_id}, function(data) {});
+		  $(this).parent().hide();	
+	  }
+	});
+</script>
+<%end%>
+<!--
+	Powered by wizzion.com fork of Kastalia KMS (<a href="/11">Impressum</a>,	<a href="/12">Datenschutz</a>, <a href="/login">Login</a>)
+	<div style="position:fixed; bottom: 5px;">
+	<div id="linkring" style="width: 100%; height:100%;font-size:12px;margin-top:5px;">
+	wizzion.com's linkring :: <%ring=['fibel.digital','gardens.digital','refused.science','baumhaus.digital','teacher.solar','naadam.info','kyberia.de','puerto.life','giver.eu']%>
+	<%use Shuffle%>
+	<%for r in ring.shuffle%>
+		<a href="https://<%r%>"><%r%></a>
+	<%end%>
+	</div>
+-->
+</body>
+</html>

@@ -1,0 +1,43 @@
+<div id="page">
+      <div id="sidebar">
+        <ul id="sidebar-items">
+          <li>
+            <h3>Kastalia KMS user password reset</h3>
+          </li>
+        </ul>
+
+      </div>
+
+      <div id="content">
+        <div id="getting-started">
+          <h1>baumhaus.digital user password reset</h1>
+		
+<form method="post" action="/user_resetpwd">
+          <ol>
+            <li>
+              <h2>Specify the name of the person whose password You want to change:</h2>
+                <br/>First name:<input name="firstname" type="text"><br/>Surname: <input name="surname" type="text">
+            </li>
+            <li>
+              <h2>Registrar's identity:</h2>
+                <br/>You are:<input value="<%registrar_login%>" name="registrar_login" type="text" readonly>
+            </li>
+            <li>
+              <h2>Specify the project domain or organisation unit (OU) name:</h2>
+                <input name="ou" type="text" value="m3x"/>
+            </li>
+
+
+            <li>
+                <h2>Submit the registration</h2>
+                <br/><center><input value="Register" type="submit"></center>
+		<p>
+			After submitting this form and if all goes well, the new password will appear in the msg in top-left corner of Your screen. Copy it into clipboard and transfer it to the registered person by some safe means (e.g. no gmail).
+		</p>
+            </li>
+
+          </ol>
+</form>
+        </div>
+      </div>
+    </div>

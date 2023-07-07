@@ -1,0 +1,8 @@
+<script>
+$("#up_button").click(function() {
+   window.location.href='/'+$("#level"+($('.ancestors').length-2).toString()).val();
+});
+$("#back_button").click(function() {
+    history.back(1);
+});
+</script>

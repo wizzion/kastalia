@@ -1,0 +1,35 @@
+<%use date%>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+
+  <title>DOMAIN - LAST_KNOTS</title>
+
+  <!-- Extension CSS files go here. Remove or add as needed. -->
+  <link rel="stylesheet" media="screen" href="/css/fibel/style.css">
+</head>
+<body>
+	<div id="brahma">
+		<% INCLUDE "layouts/brahma.tt" %>
+	</div>
+	<div id="vishnu">
+		<% FOREACH bound IN bounds%>
+		<div class="element">
+			<%if !bookmarks%>
+				<%bound.bound_created%>
+				<a href="/<%bound.sub_id%>"><%bound.sub_name%></a>
+			&nbsp; <%bound.predicate%> &nbsp;
+			<%end%>
+			<a href="/<%bound.obj_id%>/knot"><%bound.obj_name%></a>
+				 (<%bound.ord%>)
+			<span class="delete_bound" bid="<%bound.bound_id%>">❌</span>
+
+		</div>
+		<% END %>
+                <% INCLUDE "modules/shiva.tt" %> 
+</body>
+</html>

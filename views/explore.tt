@@ -1,0 +1,220 @@
+<!--Code below can be used only with explicit permission from its author Daniel D. Hromada. All rights reserved. Any replication or modification without explicit consent of the author prohibited. -->
+<%use date%>
+<%use ListUtil%>
+<%include modules/brahma.tt%>
+  <style>
+	.option {padding-left: 5vw; padding-right:5vw; padding-top:5vh; font-size:50px;}
+	//.option,#title {background:linear-gradient(90deg,red 30%,blue 60%,yellow);-webkit-background-clip: text;color:transparent;-webkit-text-fill-color:transparent;}*/
+	select,input {font-size:4vh;}
+	html body {margin:0px; width:100vw;height:100vh;}
+	a {text-decoration: none; color:black;}
+  </style>
+</head>
+<script>
+        var options=[<% options=knot.knot_id.get_children_roulette%><% FOREACH option IN options %>{content:"<%option.knot_content|uri%>",id:<%option.knot_id%>,name:"<%option.knot_name%>"<%if option.palope%>,palope:"<%option.palope.replace('"',"'")%>"<%end%><%if option.background and !option.palope%>,background:"<%option.background%>"<%end%>,template:"<%option.template%>"<%if option.img_url%>,background_image:"<%option.img_url%>"<%end%>},<%END%>]
+</script>
+
+<body>
+	<%include modules/header.tt%>
+	<div id="option0" class="option" style="position:fixed;left:0px;width:40vw;height:25vh;top:10vh;"><%options.0.knot_content%> </div>
+	<div id="option1" class="option" style="position:fixed;left:50vw;width:40vw;height:25vh;top:10vh;"><%options.1.knot_content%></div>
+	<div id="option2" class="option" style="position:fixed;top:55vh;left:0px;width:40vw;height:25vh;"><%options.2.knot_content%></div>
+	<div id="option3" class="option" style="position:fixed;top:55vh;left:50vw;width:40vw;height:25vh;"><%options.3.knot_content%></div>
+	<div class="footer" style="font-size:8px; position:fixed; top: 90vh; right: 50px;">
+	</div>
+
+<script>
+//const AudioContext = window.AudioContext || window.webkitAudioContext;
+//const audioCtx = new AudioContext();
+
+var current_answer="";
+var audio_ended=0;
+var exercise_id=0;
+var session_started=0;
+var pupil="";
+var school="";
+var state="";
+var school_class="";
+var pupil_id="";
+var options_current=options[exercise_id];
+var help_requested=0;
+var current_token=previous_id="";
+var predictions=[];
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+$('#start').click(function() {
+	$("#start").css('display','none');
+	$("#help").css('display','block');
+	var date=new Date()
+	session_started=date.getTime();
+	pupil_name=$("#pupil_name option:selected").text();
+	state=$("#state option:selected").text();
+	school=$("#school option:selected").text();
+	school_class=$("#class option:selected").text();
+	pupil_id=state+';'+school+';'+school_class+';'+pupil_name;
+	set_options(options_current);
+});
+
+function fit_options(max_font_size) {
+  for (i=0;i<4;i++) {
+	  textFit($('#option'+i),{maxFontSize:max_font_size});
+	  if (options[i]["background"]!==undefined) {
+		$("#option"+i+" > span >a").css('background',options[i].background);
+		$("#option"+i+" > span >a").css('color','transparent');
+		$("#option"+i+" >span >a").css('-webkit-text-fill-color','transparent');
+		$("#option"+i+" >span >a").css('-webkit-background-clip','text');
+		$("#option"+i+" >span >a").css('text-shadow','none');
+	  }
+  }
+}
+
+const knotname_shortener_regex = /^.*\+\+/i;
+
+function set_options(option) {
+	    rand = Math.floor(Math.random() * tempcolors.length) 
+	    //$("#header").css('color',tempcolors[rand]);
+	    //$("#header").css('color',tempcolors[rand]);
+	    tempcolors.splice(rand,1);
+	    for (i=0;i<4;i++) {
+		    if (options[i]) {
+			    //$("#option"+i).html(options[i]);
+			    token=options[i].name.replace(knotname_shortener_regex,'').replaceAll('-',' ');
+			    if (i>0) {current_token+="§" };
+			    current_token+=token;
+			    //displayed colored labels if present as palope attributes
+			    if (options[i].palope) { 
+				label=options[i].palope;
+			    }
+			    else {
+				label=token;
+			    }
+			    $("#option"+i).addClass(token.toLowerCase().replaceAll(' ','_'));
+			    $("#option"+i).html('<a href="/'+options[i].id+'/'+(options[i].template?options[i].template:'explore')+'">'+label+'</a>');
+			    if (options[0]["background_image"]!==undefined) {
+				$("#option"+i).css('background-image',"url("+options[i].background_image+")");
+				$("#option"+i).css('background-size',"contain");
+				$("#option"+i).css('background-repeat',"space");
+				$("#option"+i).css('text-shadow',"2px 2px red");
+				//$("#option"+i).css('-webkit-text-fill-color','transparent');
+				rand = Math.floor(Math.random() * tempcolors.length) 
+				$("#option"+i+" a").css('color',tempcolors[rand]);
+				tempcolors.splice(rand,1);
+			    }
+			    else if (options[i]["background"]!==undefined) {
+				$("#option"+i+" >span").css('color','transparent');
+				$("#option"+i+" > span").css('background',options[i].background);
+				$("#option"+i+" > span").css('color','transparent');
+				$("#option"+i+" >span").css('-webkit-text-fill-color','transparent');
+				$("#option"+i+" >span").css('-webkit-background-clip','text');
+			    }
+		    }
+	    }
+	    setTimeout(fit_options,200,150);
+
+
+    //help_requested=0;
+    //current_answer=options_current[Math.floor(Math.random()*4)]
+    //say_random_utterance();
+}
+
+$( window ).resize(function() {
+	fit_options(200);
+});
+
+$('#help').click(function() {
+    help_requested++;
+    $("#ogg_src").attr('src','/ogg/'+current_answer);
+    $('#logos')[0].load();
+    $('#logos')[0].oncanplaythrough=$('#logos')[0].play();
+});
+
+function say_random_utterance(new_id) {
+    $("#ogg_src").attr('src','/ogg/'+current_answer);
+    $('#logos')[0].load();
+    $('#logos')[0].oncanplaythrough=$('#logos')[0].play();
+    $('#logos')[0].onended = function(){
+	var start = new Date();
+	audio_ended=start.getTime();
+    };
+}
+
+function log(message) {
+	$.post('/options',{message:message});
+}
+
+$("#voicecommand").on('mousedown touchstart', function(event) {
+  	event.preventDefault();
+  	//mouseDown = true;
+  	/*
+	console.log("pausin audio");
+	$('audio').each(function(){
+	    this.pause(); // Stop playing
+	    this.currentTime = 0; // Reset time
+	});
+	*/
+	console.log("voicecommand touched BEFORE");
+	newRequest();
+	console.log("voicecommand touched AFTER");
+	$(this).css('border','solid 2pt orange');
+});
+
+$("#voicecommand").on('mousemove touchmove', function(event) {
+  event.preventDefault();
+});
+
+$("#voicecommand").on('mouseup touchend', function(event) {
+  // Capture this event anywhere in the document, since the mouse may leave our element while mouse is down and then the 'up' event will not fire within the element.
+  $(this).css('border','solid 0pt orange');
+  setTimeout(req,1000);
+});
+
+$('.option').click(function() {
+	if (!session_started) {
+		return;
+	}
+	var stop=new Date();
+	var pupil_clicked=stop.getTime();
+	var choice=$(this).attr('value');
+	var response_time=pupil_clicked-audio_ended;
+	var result="";
+	if (current_answer==choice) {
+		result="CORRECT";
+		score++; 
+	} else {
+		result="MISTAKE";
+		score--;
+	}
+	$('#score').text(score.toString());
+	message=session_started+';'+pupil_id+";"+result+";"+current_answer+';'+response_time.toString()+';'+choice+';'+this.id+';'+help_requested;
+	log(message);
+	exercise_id++;
+	if (exercise_id>=options.length) {
+		exercise_id=0;
+	}
+	options_current=options[exercise_id];
+	set_options(options_current);
+});
+
+$(function() {
+	set_options(options);
+});
+
+function req() {
+	//navigator.allMediaStreams.forEach(stream=>stream.getTracks().forEach( track => track.stop() ));
+	mediaRecorder.stop();
+}
+
+</script>
+	<audio style='position:fixed; top:47vh; right:47vw; width: 6vw; height: 6vh;' class='logos' id="logos" >
+	<source id="ogg_src" type="audio/ogg">
+		Your browser does not support the audio format.
+	 </audio>
+
+<%include modules/js_mikroserver_client.js%>
+<%include modules/shiva.tt%>
+

@@ -1,0 +1,50 @@
+       <% IF msg %>
+  <div class="w3-panel w3-green">
+    <h3>All good!</h3>
+    <p><%msg%></p>
+  </div>
+      <% END %>
+
+     <% IF err %>
+  <div class="w3-panel w3-red">
+    <h3>Oh no!</h3>
+    <p><%err%></p>
+  </div>
+
+      <% END %>
+
+<div style="display:flex; width:100vw;">
+<%if user_id%>
+		<div class="toolbar_element">
+			<form method="post" action="/search/">
+				<button style="font-size:min(4.2vw,4.2vh);" type="submit">🔍</button><input style="width:7vw" type="text" id="minisearch" name="query"/>
+			</form>
+		</div>
+		<div class="toolbar_element">
+			<a href="/1/" title="root">#️ </a>
+		</div>	
+		<div class="toolbar_element">
+			<a href="/" title="fibel">🕮 </a>
+		</div>	
+
+
+		<div class="toolbar_element">
+			<a title="zeitgeist" href="/zeitgeist/">👻</a>
+		</div>	
+		<div class="toolbar_element">
+			<a title="self" href="/knot/<%user_id%>/">🪞</a>
+		</div>	
+		<div class="toolbar_element">
+			<a title="bookmarks" href="/bookmarks/">🔖</a>
+		</div>	
+		<div class="toolbar_element">
+			<a title="knots" href="/last/">🪢 </a>
+		</div>	
+		<div class="toolbar_element">
+			<a title="bounds" href="/bounds/">⛓️ </a>
+		</div>	
+		<div class="toolbar_element" >
+			<a title="logout" href="/logout/">🔒<%login%></a>
+		</div>
+<%end%>
+</div>

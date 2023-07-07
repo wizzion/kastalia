@@ -1,0 +1,5 @@
+<% IF layout %>
+<% content %>
+<% ELSE %>
+<% INCLUDE "layouts/main_old.tt" %>
+<% END %>

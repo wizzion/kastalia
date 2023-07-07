@@ -1,0 +1,102 @@
+<select id="voiceSelect" style="background-color:transparent; font-size:1.23em;" class="top-right-corner">
+	<!--	<option selected disabled>Stimme</option>-->
+</select>
+<!--
+<button id="hamburger_play" class="top-right-corner" >👂</button>
+<button id="cross_play" class="top-right-corner" style="visibility:hidden;">❌</button>
+<div id="menu_play" class="menu">
+  <ul>
+	<li>
+			<select id="voiceSelect"><option selected disabled>Stimme</option></select>
+		</li>
+	<li>
+		<select id="tempoSelect">
+			<option selected disabled>Geschwindigkeit</option>
+			<option value="0.61">Largo</option>
+			<option value="0.75">Lento</option>
+			<option value="0.9">Andante</option>
+			<option value="1" selected>Normal</option>
+			<option value="1.1">Allegro</option>
+			<option value="1.2">Vivace</option>
+			<option value="1.3">Presto</option>
+		</select>
+	</li>
+		
+  </ul>
+</div>
+-->
+<script>
+
+	function set_voice(folio_id,voice) {
+		var json;
+		var selected;
+		console.log($.deck('getSlide').attr('knot_id'));
+		console.log("SET VOICE CALLED"+voice+" in folio "+folio_id);
+		if (voicez[folio_id][voice]) {
+			words[folio_id]=voicez[folio_id][voice];
+			selected=voice;
+			preferred_voice=selected;
+		}
+		else {
+			<%if knot.default_voice%>
+			words[folio_id]=voicez[folio_id]['<%knot.default_voice%>'];
+			<%else%>
+			var vs=document.getElementById('voiceSelect');
+			selected=$(vs.options[0]).text();
+			words[folio_id]=voicez[folio_id][selected];
+			<%end%>
+		}
+		//preferred_voice=selected;
+		var audio = $("#logos_"+folio_id);
+		$('#ogg_'+folio_id).attr('src','/audio/'+variantz[folio_id][selected]+'.ogg');
+	    	$('#mp3_'+folio_id).attr('src','/audio/'+variantz[folio_id][selected]+'.mp3');
+
+		console.log(words);
+		init_tokens(folio_id);
+		var audio = $("#logos_"+folio_id);
+	    	<%if template_name == "palope" or template_name=='paloperec'%>loadFolio();<%end%>
+	    	audio[0].load();//suspends and restores all audio element
+	}
+
+
+	$("#voiceSelect").on('change', function () {
+		selected_voice=this.value;
+		current_id=$.deck('getSlide').attr('knot_id');
+		$.ajax({                                            
+			 url: '/api/memcache_uri/preferred_voice/'+encodeURIComponent(selected_voice),                        
+			 success: function(data)          
+			 { 
+				//console.log("DAT"+decodeURIComponent(data));
+			 },
+		});
+
+		stop_all_audio();
+		stop_all_markers();
+	    	set_voice(current_id,selected_voice);
+	    	var audio = $("#logos_"+current_id);
+	    //audio[0].play();
+	    audio[0].oncanplaythrough = audio[0].play();
+
+	});
+
+
+
+$("#hamburger_play").click(function() {
+  console.log("HR");
+  $(this).css('visibility','hidden');
+  $('#cross_play').css('visibility','visible');
+  $("#menu_generic").css('visibility','hidden');
+  $("#menu_play").css('visibility','visible');
+  $("#menu_play").slideToggle();
+  $("#hamburger_actions").css('visibility','visible');
+  $("#cross_actions").css('visibility','hidden');
+
+});
+$("#cross_play").click(function() {
+  $(this).css('visibility','hidden');
+  $('#hamburger_play').css('visibility','visible');
+  $("#menu_play").slideToggle();
+});
+
+
+</script>

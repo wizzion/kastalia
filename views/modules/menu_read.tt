@@ -1,0 +1,69 @@
+  <button id="hamburger_read" class="top-right-corner">👄</button>
+  <button id="cross_read"  class="top-right-corner cross">❌</button>
+
+<div class="menu" id="menu_read">
+<ul>
+	<li>
+		<select name="gender" id="gender"><option value="U">⚥</option><option value="F">♀</option><option value="M">♂</option></select>
+	</li>
+	<li>
+		<select id="age" name="age"><option disabled>Age (years)</option><option value="Kita">pre-school</option><option value="Stufe1">elementary school</option><option value="Stufe2">secondary school</option><option value="Adolescent">adolescent</option><option value="Adult" selected>adult</option><option value="Senior">senior</option></select> 
+	</li>
+	<li>
+		<select id="zodiac" name="zodiac">
+			<option disabled>Zodiac ;)</option>
+			<%INCLUDE "modules/zodiaclist.tt"%>
+		</select>
+	</li>
+	<li>
+		<select id="motherlang" name="motherlang"><option disabled>Mother language</option><%INCLUDE "modules/langlist.tt" %></select>
+	</li>
+	<li>
+		<select id="consent" name="consent"><option value="NULL" selected disabled>Consent type</option><option value="NOT">Do not upload</option><option value="STT">Only Speech-to-text</option><option value="TTS">Only Text-to-speech</option><option value="STT_TTS">Both STT & TTS models</option><option value="Public">Public Dataset</option></select>
+	</li>
+	<li>
+		<!--<%t='last_created_name'%><%containtext=t.get_session_key%><input style="z-index:1000;" type="text" placeholder="Container_id" id="container_id"<%if containtext%> title="<%containtext%>" value="<%t='container_id'%><%t.get_session_key%>"<%end%>/>&nbsp;-->
+		<input style="z-index:1000;display:none;" type="text" placeholder="Container_id" id="container_id" title="<%knot.knot_name%>"" value="<%knot.knot_id%>" >
+	</li>
+	<li>
+		<div class="bottom-right-corner">
+			<button style='background-color:green;' id="helpButton" />HELP!</button>
+			<button style='background-color:green;' id="consentInfo"/>Consent Info</button>
+		</div>
+	</li>
+
+
+	</ul>
+</div>
+<script>
+$("#hamburger_read").click(function() {
+  $(this).css('visibility','hidden');
+  $('#cross_read').css('visibility','visible');
+  $("#menu_generic").css('visibility','hidden');
+  $("#menu_read").css('visibility','visible');
+  $("#menu_read").slideToggle();
+  $("#hamburger_generic").css('visibility','visible');
+  $("#cross_generic").css('visibility','hidden');
+
+});
+$("#cross_read").click(function() {
+  $(this).css('visibility','hidden');
+  $('#hamburger_read').css('visibility','visible');
+  $("#menu_read").slideToggle();
+});
+
+$("#zodiac").val("<%t='zodiac'%><%t.get_session_key%>");
+$("#age").val("<%t='age'%><%t.get_session_key%>");
+$("#gender").val("<%t='gender'%><%t.get_session_key%>");
+$("#motherlang").val("<%t='motherlang'%><%t.get_session_key%>");
+<%t='consent'%><%consent=t.get_session_key%><%if consent!='null'%>$("#consent").val("<%consent%>");<%end%>
+
+$("#upld").on('click', function() {
+    $('#upld').html('');
+    $("#audiomenu").css('display','none');
+
+});
+</script>
+
+
+

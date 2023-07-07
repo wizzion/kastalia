@@ -1,0 +1,25 @@
+
+		<%limit=200%>
+<ul>
+		<% FOREACH knot IN limit.get_last_knots%>
+		<div style="display:inline-block; width:70%;padding:20px;" class="element">	
+			<div class="element-title">
+				<a href="/<%knot.knot_id%>" title="<%knot.knot_name%>"><%knot.knot_name%></a>
+			</div>
+			<div style="float:left; width:33%;padding:20px;color:green;" class="element-content">
+				<p>
+					Content:<span style="font-weight:bold;"><%knot.knot_content|html%></span>
+				</p>
+				<p>
+					Parameters: <%knot.attribute_json%>
+				</p>
+			</div>
+			<div style="float:right;width:33%;" class="element-image">
+				<%if knot.img_url%>
+					<img src="<%knot.img_url%>"/>
+				<%end%>
+			</div>
+			</div>
+		</div>
+		<% END %>
+</ul>

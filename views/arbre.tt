@@ -1,0 +1,369 @@
+<!--Code below can be used only with explicit permission from its author Daniel D. Hromada. All rights reserved. Any replication or modification without explicit consent of the author prohibited. -->
+<%use date%>
+<%use ListUtil%>
+<%include modules/brahma.tt%>
+
+<style>
+
+<%if a.arbre_color%><%color=a.arbre_color%><%else%><%color="orange"%><%end%>
+<%if a.arbre_bg_color%><%bg_color=a.arbre_bg_color%><%else%><%bg_color="white"%><%end%>
+<%if a.arbre_font%><%font=a.arbre_font%><%else%><%font="schuldruck.ttf"%><%end%>
+@font-face { font-family:"ArbreFont"; src:url(/fonts/<%font%>);}
+html, body { margin:0; padding:0; overflow:hidden;/*background: linear-gradient(blue,yellow);*/}
+svg { top:0; left:0; height:100vh; width:vw }
+
+
+body,html {
+    font-family: 'Avenir Roman', 'Avenir LT Std', 'Helvetica Neue', 'Helvetica', 'Arial';
+    background-color: <%bg_color%>;
+}
+	.node {
+		cursor: pointer;
+	}
+
+	.node circle {
+		fill: <%bg_color%>;
+	  stroke: <%color%>;
+	  stroke-width: 1px;
+	}
+
+	.node text {
+	  font: 16px Avenir Roman;
+	  color:<%color%>;
+		  
+	}
+
+	.link {
+	  fill: none;
+	  stroke: <%color%>;
+	  stroke-width: 1px;
+	}
+	
+</style>
+
+<!--	<link rel="stylesheet" href="/css/fibel/style.css" />-->
+</head>
+<body>
+	<%include modules/header.tt%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+<header>
+<!--
+    <button onclick="expandAll()">Expand All</button>
+    <button onclick="collapseAll()">Collapse All</button>
+-->
+  </header>
+<script>
+var arbre=[];
+<%foreach ancestor in knot.knot_name.replace('Curriculum','').split('\+\+')%>
+	<%if ancestor%>
+		<%if depth>0%>
+			<%path="$path++$ancestor"%>
+		<%else%>
+			<%path="$ancestor"%>
+		<%end%>
+		arbre.push('<%path.replace('\+\+',';')%>;');
+		<%depth=depth+1%>
+	<%end%>
+<%end%>
+<%foreach branch in knot.knot_name.get_materialized_paths%>
+	arbre.push("<%branch.knot_name.replace('\+\+',';').replace('Curriculum;',"")%>;");
+<%end%>
+
+var knot_depth=<%depth%>;
+let token2path=Object.fromEntries(arbre.map(x => [x.replace(/.*;(?=\w)/,'').slice(0,-1),x.slice(0,-1).replaceAll(';','++')]));
+
+console.log(token2path);
+
+
+class TreeNode {
+  constructor(value,parent,path) {
+    this.name = value;
+    this.children = [];
+    this.parent = parent;
+    if (token2path[value]) {
+	    this.depth=(token2path[value].match(/\+\+/g)||[]).length;
+            //console.log(token2path[value],this.depth);
+    }
+  }
+}
+
+function prettyJSON(obj) {
+    console.log(JSON.stringify(obj, null, 2));
+}
+
+function checkarray(ar, name){
+    for (i of ar){
+      if(i["name"]==name){
+        return i
+      }
+    }
+    return false
+}
+
+function treeparse(data,treenote){
+  var currentnode = data.substring(0,data.indexOf(';'))
+  var newrest = data.substring(data.indexOf(';')+1)
+
+  var nextnode;
+  if (checkarray(treenote.children,currentnode)){
+    nextnode = checkarray(treenote.children,currentnode)
+  }else{
+    nextnode = new TreeNode(currentnode,treenote.name,data);
+    treenote.children.push(nextnode)
+  }
+  if(newrest){
+    treeparse(newrest,nextnode)
+  }
+}
+
+function parsearray(treedata){
+  for (i of treedata){
+    treeparse(i,abe)
+  }
+  //prettyJSON(abe);
+  return abe;
+}
+
+const abe = new TreeNode(null,null);
+//const abe = new TreeNode('<%knot.parent_name%>','null');
+//const abe = new TreeNode('','null');
+//parsearray(arbre)
+//var treeData=[parsearray(arbre)]
+var root=parsearray(arbre)
+		// ************** Generate the tree diagram	 *****************
+var margin = {top: 200, right: 120, bottom: 20, left: 0},
+	width = 1920 - margin.right - margin.left,
+	height = 1000 - margin.top - margin.bottom;
+
+var i = 0,
+	duration = 750,
+	root;
+
+var tree = d3.layout.tree()
+	.size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+	.projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.right + margin.left)
+	.attr("height", height + margin.top + margin.bottom)
+  .append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//root = treeData[0];
+root.x0 = height / 2;
+root.y0 = 0;
+
+update(root);
+
+//d3.select(self.frameElement).style("height", "500px");
+
+function update(source) {
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+	  links = tree.links(nodes);
+  // Normalize for fixed-depth.
+//  nodes.forEach(function(d) { d.y = Math.ceil(d.depth**1.6) * 100; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+	  .attr("class", "node")
+	  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
+	  //.on("click", click);
+/*
+  nodeEnter.append("circle")
+	  .attr("r", 1e-6)
+	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+*/
+  //nodeEnter.append("a").attr("xlink:href",function(d) { return '/name/'+d.name.replace(/\s/g,'+')+'/'; }).append("text")
+  //nodeEnter.append("a").attr('target','_blank').attr("xlink:href",function(d) { return '/'+encodeURIComponent(d.path); }).append("text")
+/*
+  nodeEnter.append("span").attr("xlink:href",function(d) { return '/'+encodeURIComponent(token2path[d.name]+'/arbre'); })
+	  .on("click", function (){console.log("WTF"); return false;})
+	  .on("dblclick",function(){console.log("DOUBLEWTF");return false;})
+	.append("text")
+	  //.attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+	 // .attr("x", function(d) { return 0; })
+	  //.attr("y", function(d) { return 10; })
+	  .attr("y", function(d) { return 23+(d.depth%2*30); })
+	  //.attr("y", function(d) { return 10; })
+	  //.attr("y", function(d) { return d.children || d._children ? 10 : 40; })
+	  .attr("dy", ".35em")
+	  //.attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+	  .attr("text-anchor", function(d) { return 'middle' })
+*/
+	  nodeEnter.append("text").text(function(d) { return d.name; })
+	  .style("fill-opacity", 1e-6)
+	  .style("text-anchor","end")
+	 // .attr("x", function(d) { return 0; })
+	  .style("font-size", '24px')
+	  .style("font-family", 'ArbreFont')
+	  .style("fill", '<%color%>')
+	  .on("click",click);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+	  .attr("r", 10)
+	  .style("fill", function(d) { return d._children ? "<%bg_color%>" : "#fff"; });
+
+  nodeUpdate.select("text")
+	  .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+	  .remove();
+
+  nodeExit.select("circle")
+	  .attr("r", 1e-6);
+
+  nodeExit.select("text")
+	  .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+	  .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+	  .attr("class", "link")
+	  .attr("d", function(d) {
+		var o = {x: source.x0, y: source.y0};
+		return diagonal({source: o, target: o});
+	  });
+
+  // Transition links to their new position.
+  link.transition()
+	  .duration(duration)
+	  .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+	  .duration(duration)
+	  .attr("d", function(d) {
+		var o = {x: source.x, y: source.y};
+		return diagonal({source: o, target: o});
+	  })
+	  .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+	d.x0 = d.x;
+	d.y0 = d.y;
+  });
+}
+
+var dat = new Date();
+let old_timer = dat.getTime();
+
+// Toggle children on click.
+function click(d) {
+  dat = new Date();
+  new_timer=dat.getTime();
+  console.log(new_timer,old_timer);
+  if (new_timer-old_timer<200) {
+	console.log("doubleclick "+d.name);
+        window.location="/Curriculum++"+token2path[d.name]+"/arbre"; 
+  } else {
+	  console.log("(un)folding "+d.name);
+	  if (d.children) {
+		d._children = d.children;
+		d.children = null;
+	  } else {
+		d.children = d._children;
+		d._children = null;
+	  }
+	  if (d.name==root.name) {
+		d.children.forEach(expand1);
+	  }	  
+	  update(d);
+  }
+  old_timer=new_timer;
+}
+
+function dblclick(d) {
+	console.log(d);
+}
+
+function expand1(d) {
+    if (d._children) {        
+        d.children = d._children;
+        d._children = null;       
+    }
+}
+
+function expand(d){   
+    var children = (d.children)?d.children:d._children;
+    if (d._children) {        
+        d.children = d._children;
+        d._children = null;       
+    }
+    if(children)
+      children.forEach(expand);
+}
+
+function expandAll(){
+    expand(root); 
+    update(root);
+}
+
+
+function collapseAncestors(){
+    if (knot_depth<2) {
+	root.children[0].children.forEach(function(c) {c.children.forEach(collapse)});
+    }
+    else if (knot_depth<3) {
+	root.children[0].children.forEach(function(c) {c.children.forEach(function(c) {c.children.forEach(collapse)})});
+    }
+
+    //collapse(root);
+    update(root);
+}
+
+
+function collapseAll(){
+    root.children[0].forEach(collapse);
+    collapse(root);
+    update(root);
+}
+
+function collapseLayer(d=[]) {
+	if (!d.length) {
+		d=root.children[0].children.forEach(function(c) {c.children.forEach(collapseLayer)});
+	}
+	if (d.children && d.depth==2) {
+		d._children = d.children;
+		d._children.forEach(collapseLayer);
+		d.children = null;
+	}
+}
+
+
+function collapse(d) {
+	if (d.children) {
+		d._children = d.children;
+		d._children.forEach(collapse);
+		d.children = null;
+	}
+}
+
+d3.select(window).on("load", collapseAncestors);
+</script>
+<!--
+<div id="shiva">
+	<% INCLUDE "modules/shiva.tt" %>
+</div>
+-->
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+<%root="DE"%>
+<%foreach branch in root.get_materialized_paths%>
+<%unless branch.knot_name.match('<')%>
+<%kn=branch.knot_name.replace(' ','%20').replace('\+\+','/')%>
+https://fibel.digital/_<%kn%>.recite
+https://fibel.digital/_<%kn%>.explore
+<%end%>
+<%end%>
+
+

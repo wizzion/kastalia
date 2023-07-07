@@ -1,0 +1,111 @@
+.invisible {
+	display: none;
+}
+
+@font-face {
+        font-family: 'OratorStd';
+        src: url('https://cloud.medienhaus.udk-berlin.de/community/fonts/OratorStd.otf');
+}
+@font-face {
+        font-family: 'OratorStd-Slanted';
+        src: url('https://cloud.medienhaus.udk-berlin.de/community/fonts/OratorStd-Slanted.otf');
+}
+
+
+* {
+    font-family: 'OratorStd';
+    color: black;
+}
+
+.content {
+	margin: 25px;
+	font-size: 16px;
+}
+
+img {
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
+#horizon ul {
+  list-style: none;
+    padding: 0;
+}
+
+#horizon > ul:after{
+    clear:both;
+    content:"";
+    display:block;
+}
+
+#horizon > ul > li {
+  float: left;
+  position: relative;
+  border: 1px solid #FF00CC;
+}
+
+#horizon > ul > li > a {
+    text-decoration: none;
+    padding: 5px 10px;
+    display:block;
+    color: black;
+}
+
+#horizon > ul > li > a:hover {
+    background-color: lightgreen;
+}
+
+
+#horizon > ul > li > ul {
+    background-color:#FF00CC;
+     display: none;
+  width:150px;
+  top:100%;
+  left:0;
+  position: absolute;
+}
+
+#horizon > ul > li > ul > li {
+  position: relative;
+   width:100%;
+  display: block;
+}
+
+#horizon > ul > li > ul > li > a {
+  text-decoration: none;
+    padding: 5px 10px;
+    display:block;
+    color: black;
+}
+
+#horizon > ul > li > ul > li > a:hover {
+  background-color:white;
+}
+
+#horizon > ul > li:hover > ul {
+  display: block;
+}
+
+#horizon > ul > li > ul > li > ul {
+    display:none;
+    background-color:lightblue;
+    position:absolute;
+    left:100%;
+    top:0;
+      width: 150px;
+  background-color: green;
+}
+
+#horizon > ul > li > ul > li > ul > li > a {
+  text-decoration: none;
+    padding: 5px 10px;
+    display:block;
+    color: black;
+}
+
+#horizon > ul > li > ul > li > ul > li > a:hover {
+    background-color:yellow;
+}
+
+#horizon > ul > li > ul > li:hover ul {
+  display: block;
+}

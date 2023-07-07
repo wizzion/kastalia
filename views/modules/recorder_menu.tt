@@ -1,0 +1,28 @@
+<div style='display:none; 'id="formats"></div>
+<div id="menu" style="margin:auto;z-index:1000;">
+	<!--Voice: <input type="text" id="voice_id" value="<%t='user'%><%voice=t.get_session_key%><%voice%>"/>&nbsp;-->
+	<select name="gender" id="gender"><option value="U">⚥</option><option value="F">♀</option><option value="M">♂</option></select>
+	<select id="age" name="age"><option disabled>Age (years)</option><option value="Kita">pre-school</option><option value="Stufe1">elementary school</option><option value="Stufe2">secondary school</option><option value="Adolescent">adolescent</option><option value="Adult" selected>adult</option><option value="Senior">senior</option></select> 
+	<select id="zodiac" name="zodiac">
+		<option disabled>Zodiac ;)</option>
+		<%INCLUDE "modules/zodiaclist.tt"%>
+	</select>
+	<select id="motherlang" name="motherlang"><option disabled>Mother language</option><%INCLUDE "modules/langlist.tt" %></select>
+	<select id="consent" name="consent"><option value="NULL" selected disabled>Consent type</option><option value="NOT">Do not upload</option><option value="STT">Only Speech-to-text models</option><option value="TTS">Only Text-to-speech</option><option value="STT_TTS">Both STT & TTS models</option><option value="Public">Public Dataset</option></select>
+	<%t='last_created_name'%><%containtext=t.get_session_key%><input style="z-index:1000;" type="text" placeholder="Container_id" id="container_id"<%if containtext%> title="<%containtext%>" value="<%t='container_id'%><%t.get_session_key%>"<%end%>/>&nbsp;
+</div>
+<script>
+$("#zodiac").val("<%t='zodiac'%><%t.get_session_key%>");
+<%t='consent'%><%consent=t.get_session_key%><%if consent!='null'%>$("#consent").val("<%consent%>");<%end%>
+$("#age").val("<%t='age'%><%t.get_session_key%>");
+$("#gender").val("<%t='gender'%><%t.get_session_key%>");
+$("#motherlang").val("<%t='motherlang'%><%t.get_session_key%>");
+
+$("#upld").on('click', function() {
+    $('#upld').html('');
+});
+
+
+
+</script>
+

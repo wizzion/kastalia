@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Digital Education at Berlin University of the Arts</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/css/normalize.css">
+  <link rel="stylesheet" href="/css/skeleton.css">
+<link rel="icon" type="image/png" href="/favicon.png">
+
+
+<style>
+
+h3 {
+	min-height:100px; color:#EC1C24;
+	/*padding-left: 20%; background-image: url('http://bildung.digital.udk-berlin.de/presentations/ecdf_industry_forum_2018/IndustryForum_files/3649.gif'); background-size: 20%; background-repeat: no-repeat; min-height:100px;*/
+}
+h3 p { font-size: 18px;}
+@media (min-width
+</style>
+</head>
+<body>
+
+  <div class="container">
+	<div class="one-third column" style="margin-top: 10px;">
+		<%knot.knot_content%>
+	</div>
+	<div class="two-thirds column">
+
+
+	<%FOREACH child IN knot.knot_id.get_children %>
+	    <div class="row">
+	      <div  style="margin-top: 5%">
+		<h3>
+			<%child.knot_name%>
+			<p>
+				<i><%child.epoch%> / <%child.ae_epoch%></i>
+				<%if child.publication%>
+					, <%child.publication%>
+				<%end%>
+				<%if child.doi%>
+					, <a target="_blank" href="<%child.doi%>"><%child.doi%></a>
+				<%end%>
+
+				<%if child.link_text%>
+					; <a href="<%child.link_url%>"><%child.link_text%></a>
+				<%end%>
+			</p>
+		</h3>
+			<%child.knot_content%>
+		</div>
+	    </div>
+	<%END%>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!-- Coded by Prof. Dr. Dr. Daniel Devatman Hromada for the purpose of DigiEduPrimer AE51 hackathon -->
+<!-- Commercial use of any part of this codee without consent of author prohibited -->
+<%include modules/brahma.tt%>
+
+  <link rel="stylesheet" media="screen" href="/css/deck/core/deck.core.css">
+  <link rel="stylesheet" media="screen" href="/css/deck/extensions/navigation/deck.navigation.css">
+
+  <link rel="stylesheet" media="screen" href="/css/deck/themes/transition/horizontal-slide.css">
+
+  <!-- Basic black and white print styles -->
+  <link rel="stylesheet" media="print" href="/css/deck/core/print.css">
+
+  <!-- Required Modernizr file -->
+  <script src="/js/modernizr.custom.js"></script>
+  <style>select,input {font-size:max(1.5vh,1.5vw);}</style>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/textfit.js"></script>
+	<style>
+
+.token {
+	margin-top:20pt;
+	float:left;
+	padding-right: 10px;
+	padding-bottom: 5px;
+	opacity:0.4;
+	background-color:rgba(F,F,F,0);
+}
+
+.word {
+	margin-top:1vh;
+	margin-left:2vw;
+	float:left;
+	padding-bottom: 5px;
+	border: solid 1vh;
+}
+
+	.modal {
+	  display: none; /* Hidden by default */
+	  position: fixed; /* Stay in place */
+	  z-index: 1; /* Sit on top */
+	  left: 0;
+	  top: 0;
+	  width: 100%; /* Full width */
+	  height: 100%; /* Full height */
+	  overflow: auto; /* Enable scroll if needed */
+	  background-color: rgb(0,0,0); /* Fallback color */
+	  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	  z-index:1000;
+	}
+
+	/* Modal Content/Box */
+	.modal-content {
+	  background-color: #fefefe;
+	  margin: 15% auto; /* 15% from the top and centered */
+	  padding: 20px;
+	  border: 1px solid #888;
+	  width: 80%; /* Could be more or less, depending on screen size */
+	}
+
+	/* The Close Button */
+	.close {
+	  color: #aaa;
+	  float: right;
+	  font-size: 28px;
+	  font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+	  color: black;
+	  text-decoration: none;
+	  cursor: pointer;
+	}
+
+	.utterance {
+	   user-select: none;
+	   -moz-user-select: none;
+	   -webkit-user-select: none;
+	   -ms-user-select: none;
+	}
+	</style>
+	</head>
+  <body style="overscroll-behavior:none;width:100vw;height:100vh;margin:0px;overflow:hidden;position:fixed;">
+
+<%include modules/header.tt%>
+<%include "modules/menu_read.tt"%>
+<!--	<div id="content"><%knot.knot_content%></div> -->
+<script>var words={};</script>
+<div id="upld" timestamps="" class="bottom-right-corner"></div>
+<div id="image" style="position:fixed; top:5vh; right:5vw;z-index:100; font-size:32px;width:60px; height:40px;z-index:-100;"></div>
+
+<button class="bottom-left-corner" style='color:red;' id="recordButton"/>🗣</button>
+<!--<span style='position:fixed;bottom:2vh;right:2vw;z-index:100;font-size:10vh;color:red;display:none;' id="stopButton"/>⏹</span>-->
+
+<div id="audiomenu" class="bottom-right-corner" style="display:none;margin-right:8vw;">
+	<div style='display:none; 'id="formats"></div>
+	<audio id="logos" controls></audio>
+</div>
+
+<%#if knot.default_prosody%>
+	<%#default_prosody=knot.default_prosody%>
+<%#else%><%#default_prosody=['blue','gold','blue','gold','blue','gold','blue','gold','blue','gold','blue','gold','blue','gold','blue','gold']%>
+<%#end%>
+<% FOREACH child IN knot.knot_id.get_2generations %>
+	<%if child.knot_id%>
+		<section knot_id="<%child.knot_id%>" class="slide" id="folio-<%child.knot_id%>">
+			<div style='display:none;' id="knot_<%child.knot_id%>_name"><%child.knot_content%></div>
+			<div style='display:none;' id="knot_<%child.knot_id%>_parent"><%child.knot_id%></div>
+			<script>vorlagen["<%child.knot_content.substr(0,20)|uri%>"]=<%child.knot_id%>;vorlagen_rev[<%child.knot_id%>]="<%child.knot_content.substr(0,20)|uri%>";</script>
+
+		<div id="content-<%child.knot_id%>"  style="margin:15vh 5vw; width:90vw;height:70vh;">
+			<div style="width:90vw;height:70vh;margin-right:1vw;float:right;" class="utterance" id="utterance_<%child.knot_id%>">
+			    <%id=0%>
+			    <%#if child.prosody%><%#prosody=child.prosody.split(',')%><%#else%><%#prosody=default_prosody%><%#end%>
+			    <%foreach word IN child.knot_content.get_words%>
+				 <%if word !='_' and word!=''%>
+				    <div style="color:<%#prosody.$id%>;<%if previous_word=='_'%>margin-left:0vw;<%end%>" seq_id="<%id%>" class="word" id="w_<%child.knot_id%>_<%id%>"><%word.process%></div>
+					<%id=id+1%>
+				 <!--<%if word == "." or word=='?' or word=='!!'%>
+					<div style="clear:left"></div>
+				<%end%>-->
+				<%end%>
+				<%previous_word=word%>
+			    <%end%>
+			</div>
+		 	<img class="illustration-img illustration-<%child.knot_id%>" id="illustration-<%child.knot_id%>" style="max-height:77vh;width:0px;" src=""/>
+<!--		 	<div class="illustration-img illustration-<%child.knot_id%>" style="background-size:contain;width:85vw;margin-top:15vh;margin-left:7vw;margin-right:7vw;background-repeat:no-repeat;height:85vh;" src="""/>-->
+		</section>
+	<%end%>
+<%end%>
+<script>var max_seq_id=<%id%>;</script>
+<!-- deck.navigation snippet -->
+<!--
+<div aria-role="navigation">
+	<a href="#" style="display:block;" class="deck-prev-link" title="Previous">&#8592;</a>
+	<a href="#" style="display:block;" class="deck-next-link" title="Next">&#8594;</a>
+</div>
+-->
+<script src="/js/rec.js"></script>
+<script src="/js/rec2.js"></script>
+
+<%include modules/help_consent_modal.tt%>
+<div style="z-index:1000;position:absolute;top:20px; right: 5vw;">
+<!--
+		<button onclick="newRequest()">Record</button>
+		<button onclick="mediaRecorder.requestData()">Transcribe</button>
+-->
+</div>
+		<%include modules/js_mikroserver_client.js%>
+
+<script src="/css/deck/core/deck.core.js"></script>
+
+<script>
+$(function() {
+    $.deck('.slide');
+    console.log("deck loaded");
+    $.deck.defaults.keys.next=[];
+ });
+
+
+var foliorec=0;
+</script>
+<%include modules/recorder_code.tt%>
+<script>
+$(function() {
+	//textFit($('.utterance')[0],{maxFontSize:200});
+	$('.utterance').each(function() {
+		textFit(this,{maxFontSize:150});
+	});
+	textFit($('#header'),{maxFontSize:150});
+});
+
+
+<!-- Required JS files. -->
+
+$( window ).resize(function() {
+    new_id=$.deck('getSlide').attr('knot_id');
+    textFit($('.utterance'),{maxFontSize:150});
+
+});
+
+var modal = document.getElementById("myModal");
+var consent_modal = document.getElementById("consentModal");
+
+// Get the button that opens the modal
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+</script>
+
+<%include modules/shiva.tt%> 

@@ -1,0 +1,396 @@
+<script>
+function f2i (value) {
+	return value | 0;
+}
+var output='';
+var actual_slide_id=0;
+var old_seq_id=-1;
+var last_touched_segment;
+var stopped=true;
+var segment_started=false;
+var quote_count=0;
+var current_token=""; 
+var token_sequence=[]; 
+var predictions={}; 
+var current_id=previous_id="";
+var current_illustration="";
+
+function req() {
+	//navigator.allMediaStreams.forEach(stream=>stream.getTracks().forEach( track => track.stop() ));
+	mediaRecorder.stop();
+}
+
+function submit_recording(blob) {
+	var xhr=new XMLHttpRequest();
+	xhr.onreadystatechange=function(){
+
+	}
+	xhr.onload=function(e) {
+		if(this.readyState === 4) {
+			  console.log("Server returned: ",e.target.responseText);
+			  $.deck('next');
+			  //$("#recordingsList").html('');
+			  $("#timestamps").html('');
+			//$("#recordButton").html('🔄');
+			  $("#recordButton").html('🗣');
+			  $("#stopButton").css('display','block');
+			  $("#upld").empty();
+			  
+			  console.log("next slide");
+		}};
+	//};
+	  var fd=new FormData();
+	  //fd.append("timestamps",$('#timestamps').text().replace(/,$/,""));
+	  //deactivating timestamps display alltogether fd.append("timestamps",$('#timestamps').text());
+	  if ($( "#consent" ).val() == 'NULL' || $("#consent").val()==null) {
+		  alert("Please select Your consent type.");
+		  $("#consent").trigger('open');
+		  return;
+	  }
+	console.log("ITERATING THROUGH");
+	console.log(predictions);
+	//automatic segmentations
+
+	if ($("#upld").attr('timestamps')) {
+		output=$("#upld").attr('timestamps');
+	} 
+	//haptic segmentations
+	else {
+		for (var p_id in predictions) {
+			var regex=p_id+'",';
+			console.log(regex);
+			console.log(output);
+			output=output.replace(regex,regex+'"p":"'+predictions[p_id]+'",');
+		}
+	}
+	console.log("SUBMITTING OUTPUT "+output);
+	  fd.append("timestamps",output);
+	  fd.append("content", $('#content').text());
+	  fd.append("knot_name",$('#knot_'+actual_slide_id+'_name').text());
+	  fd.append("container_id",$('#container_id').val());
+	  fd.append("voice_id",$('#voice_id').val());
+	  fd.append("age",$('#age').val());
+	  fd.append("gender",$('#gender').val());
+	  fd.append("motherlang",$('#motherlang').val());
+	  fd.append("zodiac",$('#zodiac').val());
+	  fd.append("consent",$('#consent').val());
+	  if ($('#update_existing').is(':checked')) {
+		  fd.append("update_existing",1);
+	  }
+	  fd.append("knot_parent",$('#knot_'+actual_slide_id+'_parent').text());
+	  //console.log(timestamps);
+	  fd.append("audio_data",blob, new Date().toISOString());
+	  xhr.open("POST","/new_audio_knot",true);
+	  xhr.send(fd);
+	 console.log("recording submitted");
+}
+
+function esc_quot(text)
+{
+    text=text.replace(/["\n]*/g,'');
+    text=text.replace(/(")(.*)(")/g,'MA$2BA');
+    return text;
+}
+
+$(document).on('keyup',function(e){
+	if(e.keyCode != 78) {
+		return;
+	}
+		console.log(e.keyCode);
+	//console.log(output);
+	//starting new recording ?
+	if (last_touched_segment===undefined) {
+		rB();
+		old_seq_id=0;
+		if (!foliorec) {
+			ele=$("#utterance_"+actual_slide_id+">span>[seq_id='0']")[0];
+		} else {
+			ele=$("#utterance>div")[0];
+			//console.log(actual_slide_id);
+		}
+	}
+	else {
+		ele=$(last_touched_segment).next()[0];
+	}
+	//leaving ?
+	if (ele===undefined) {
+		output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"}';
+		//$(last_touched_segment).css('background-color','red');
+		last_touched_segment=undefined;
+		segment_started=false;
+		//previous_token=current_token;
+		//previous_id=current_id;
+		//mediaRecorder.requestData();
+		stopButton();
+		return;
+	}
+	//console.log($(ele).attr('id'));	
+	if (segment_started && ele!=last_touched_segment) {
+		<!--lesen-mikroserver-->
+		console.log("request0");
+		//FIX
+		//mediaRecorder.requestData();
+		req();
+		$(last_touched_segment).css('background-color','red');
+		output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"},';
+	}
+	previous_token=current_token;
+	//current_token=process_token(esc_quot(ele.innerHTML));
+	current_token=esc_quot(ele.innerHTML.replace('_',' '));
+	console.log("TOK"+current_token);
+	previous_id=current_id;
+	current_id=ele.id;
+	if (!current_token.match(/^[\W\s+]$/)) {
+		token_sequence.push(current_token);
+	}
+	output+='{"id":"'+ele.id+'","w":"'+current_token+'","start":"'+f2i(performance.now()-recordingStarted);
+
+	<!--let's consult lesen-mikroserver-->
+	newRequest();
+
+	if (foliorec) {
+		$(ele).css('display','none');
+	} else {
+		$(ele).css('background-color','green');
+	}
+	last_touched_segment=ele;
+	segment_started=true;
+});
+
+function process_token(token) {
+	token=token.replace('\u00f6','oe');
+	token=token.replace('\u00fc','ue');
+	token=token.replace('\u00e4','ae');
+	token=token.replace('\u00C4','Ae');
+	token=token.replace('\u00dc','Ue');
+	token=token.replace('\u00f6','Oe');
+	token=token.replace('\u00df','ss');
+	console.log("TOK"+token);
+	return token;
+}
+$(document).on('touchmove pointermove',function(e){
+      if (stopped) {
+	   return;
+	}
+	var ele;
+	var clientX;
+	if (e.clientX) {
+		ele=document.elementFromPoint(e.clientX, e.clientY);
+		clientX=e.clientX;
+	} else if ('touches' in e) {
+		ele=document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+		clientX=e.touches[0].clientX;
+	} else {
+		return;
+	}
+	/*
+	if (ele.id=="stopButton") {
+		stopButton();
+		return;
+	}
+	*/
+	if (segment_started && clientX>last_touched_segment.getBoundingClientRect().right) {
+			current_seq_id=last_touched_segment.getAttribute('seq_id');
+			$(last_touched_segment).css('background-color','red');
+			output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"},';
+			if (!current_token.match(/^[\W\s+]$/)) {
+				token_sequence.push(current_token);
+			}
+			if ($(last_touched_segment).next()[0]==undefined) {
+				console.log("stopping the show");
+				last_touched_segment=undefined;
+				segment_started=false;
+				stopButton();
+				return;
+			}
+			else {
+				console.log($(last_touched_segment).next()[0]);
+				previous_id=current_id;
+				previous_token=current_token;
+				segment_started=false;
+				console.log("not requestin1");
+				//FIX
+				//if (!mediaRecorder==='undefined') {
+					req();
+				//}
+				//mediaRecorder.requestData();
+				old_seq_id=current_seq_id;
+			}
+	}
+	else if (ele.className=='word') {
+		if (!segment_started) {
+			current_seq_id=ele.getAttribute('seq_id');
+			
+			if (current_seq_id-old_seq_id==1) {
+				current_id=ele.id;
+				//current_token=process_token(esc_quot(ele.innerHTML));
+				current_token=esc_quot(ele.innerHTML.replace('_',' '));
+				
+				output+='{"id":"'+ele.id+'","w":"'+current_token+'","start":"'+f2i(performance.now()-recordingStarted);
+				$(ele).css('background-color','green');
+				last_touched_segment=ele;
+				//old_seq_id=current_seq_id;
+				segment_started=true;
+				newRequest();
+			}
+	      }
+		
+	      else if (segment_started && ele!=last_touched_segment) {
+			current_seq_id=last_touched_segment.getAttribute('seq_id');
+			$(last_touched_segment).css('background-color','red');
+			output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"},';
+			<!--console.log("requestin");-->
+			newRequest();
+			segment_started=false;
+			//console.log(old_seq_id+"stop"+current_seq_id);
+			//console.log(output);
+			old_seq_id=current_seq_id;
+	      }
+	}
+});
+
+function stopButton () {
+	navigator.allMediaStreams.forEach(stream=>stream.getTracks().forEach( track => track.stop() ));
+	previous_token=current_token;
+	previous_id=current_id;
+	//FIX mediaRecorder.requestData();
+	req();
+
+	if (segment_started && !stopped) {
+		output+='","stop":"'+f2i(performance.now()-recordingStarted)+'"}';
+	}
+	if (!stopped) {
+		output=output.replace(/,$/,"");
+		output=output+']';
+		//$("#timestamps").html(output);
+		stopRecording();
+		stopped=true;
+		$("#recordButton").html('🔁');
+	}
+}
+
+function rB() {
+	console.log("pointer record button entered");
+	token_sequence=[];
+	predictions={};
+	$("#answer").html("");
+	$("#image").empty("");
+	$("#recordButton").html('🔁');
+	//console.log("displayin stop");
+	if (rec) {
+		$('.word').css('background-color','white');
+		try {stopRecording();}
+		catch(e) { console.log(e); }
+	}
+	$('.word').css("background-color","white");
+	$('.word').css("display","block");
+	output='var words=[';
+	//$("#recordingsList").html('');
+	$('#recordingsList li').first().remove();
+	//$("#timestamps").html('');
+	startRecording();
+	recordingStarted=performance.now();
+	stopped=false;
+	old_seq_id=-1;
+	last_touched_segment=undefined;
+	stopped=false;
+	segment_started=false;
+}
+
+
+$("#recordButton").on('click pointerover mouseover',rB);
+//$("#stopButton").on('mouseover pointerover',stopButton);
+
+$("#logos").on('play', function() {
+	if (!foliorec) {
+		$(".word").css('background-color','white');
+	} else {
+		$(".word").css('display','block');
+	}	
+
+	var i=0;
+	//var offset=0;
+	var start=0;
+	try {
+		eval(output);	
+	} catch(e) {
+		alert(output);
+	}
+	//alert(words);
+	for (let word of words) {
+		if (!foliorec) {
+			setTimeout(function () {$("#"+word.id).css("background", "red");}, start);
+			setTimeout(function () {$("#"+word.id).css("background", "white");}, word.stop);
+		}
+		else {
+			setTimeout(function () {$("#"+word.id).css("display", "none");}, start);
+			//setTimeout(function () {$("#"+word.id).css("display", "block");}, word.stop);
+		}
+		i++;
+		start=word.stop;
+	}
+});
+
+$(document).bind('deck.init', function() {
+	    hash=(document.URL.substr(document.URL.indexOf('#')+1));
+	    if (hash in vorlagen) {
+		current_id=vorlagen[hash];
+		console.log("going to folio-"+current_id);
+		$.deck('go','folio-'+current_id);
+	    } 
+    actual_slide_id=$.deck('getSlide').attr('knot_id');
+    console.log(actual_slide_id);
+    update_illustration(actual_slide_id);
+});
+
+function random_illustration(illustrations) {
+	r=illustrations[~~(Math.random() * illustrations.length)];
+	return r;
+} 
+
+function update_illustration(folio_id) {
+    try {
+	console.log("updatin illustration"+folio_id);
+	$.ajax({                                            
+		 url: '/api/get_illustration_direct/'+folio_id,                        
+		 async:false,
+		 success: function(data)          
+		 {
+			console.log(data); 
+			//$('#utterance_'+folio_id).css('width','40vw');
+			//$('.illustration-'+folio_id).css('height','100%');
+			//$('.illustration-'+folio_id).attr('src',random_illustration(data));
+			current_illustration=random_illustration(data);
+			illustration=$('.illustration-'+folio_id);
+			if (current_illustration) {
+				$('#utterance_'+folio_id).css('width','60%');
+				illustration.css('width','35%');
+				if (illustration.prop('tagName')=='IMG') {
+					illustration.attr('src',current_illustration);
+					//console.log('IMG');
+				} else {
+					illustration.css('background-image','url("'+current_illustration+'")');
+					//console.log('BGIMG')
+					//console.log(illustration);
+				}
+				textFit($('#utterance_'+folio_id),{maxFontSize:150});
+			}
+			//$('.illustration-'+folio_id).css('background-image','url("'+current_illustration+'")');
+		 }
+	});
+    } catch {1;}
+}
+$(document).bind('deck.change', function(event,from,to) {
+    actual_slide_id=$.deck('getSlide',to).attr('knot_id');
+    active_token=vorlagen_rev[actual_slide_id];
+    $("#play_link").attr("href","/<%knot.knot_id%>/play/#"+active_token);
+    $('#logos').attr('src','');
+        $("#audiomenu").css('display','none');
+
+    //$('#timestamps').html('');
+    $( "#update_existing" ).prop( "checked", false );
+    new_id=actual_slide_id;
+    update_illustration(new_id);
+});
+
+</script>

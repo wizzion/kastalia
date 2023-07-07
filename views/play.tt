@@ -1,0 +1,393 @@
+<%use date%><%use ListUtil%>
+<%include modules/brahma.tt%>
+  <link rel="stylesheet" media="screen" href="/css/deck/core/deck.core.css">
+  <link rel="stylesheet" media="screen" href="/css/fibel.css">
+  <link rel="stylesheet" media="screen" href="/css/fibel.css">
+
+  <link rel="stylesheet" media="screen" href="/css/deck/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" media="screen" href="/css/deck/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" media="screen" href="/css/deck/extensions/navigation/deck.navigation.css">
+
+  <link rel="stylesheet" media="screen" href="/css/deck/extensions/status/deck.status.css">
+  <link rel="stylesheet" media="screen" href="/css/deck/extensions/scale/deck.scale.css">
+
+  <!-- Style theme. More available in /themes/style/ or create your own. -->
+
+  <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="/css/deck/themes/transition/horizontal-slide.css">
+
+  <!-- Basic black and white print styles -->
+  <link rel="stylesheet" media="print" href="/css/deck/core/print.css">
+
+  <!-- Required Modernizr file -->
+  <script src="/js/modernizr.custom.js"></script>
+<style>
+	.token {z-index:100;margin-left:2vw;padding-top:1px;color:black;}
+</style>
+</head>
+<script src="/js/textfit.js"></script>
+
+<body style="position:fixed;cursor:auto;overflow-y: hidden; width:100vw; padding:0px;">
+
+<%include "modules/menu_play.tt"%>
+
+<script>
+	var playbackRate=1;
+	var words={};
+	var audio_playing=fragment_playing=false;
+	words['<%knot.knot_id%>']=[<%a.autx_content.process%>];
+	var preferred_voice="<%t='preferred_voice'%><%preferred_voice=t.get_session_key or knot.default_voice or "🇩🇪♀"%><%preferred_voice%>";
+               var backgrounds={};
+                function illustration(knot_id) {
+                        r=backgrounds[knot_id][~~(Math.random() * backgrounds[knot_id].length)];
+			return r;
+                } 
+                var backgrounds={};
+		var ills ="<%a.illustration_urls%>".split('::');
+                backgrounds[<%knot.knot_id%>]=ills;
+                if (ills[0]) {
+                        backgrounds[<%knot.knot_id%>]=ills;
+                        $('#words_'+<%knot.knot_id%>).css('width','60%');
+	                $('#illustration-<%knot.knot_id%>').attr('src',illustration(<%knot.knot_id%>));
+        	        $('#illustration-<%knot.knot_id%>').css('max-width','35%');
+                }
+		var audioDfr={};
+
+</script>
+	<!--<div style="position:fixed; font-size: 8px; bottom: 4vh; right: 50px;"><a href="https://fibel.digital/2736" target="_blank">fibel.digital v1 alpha</a> :: <%knot.knot_name%> :: <%a.licence%></div>-->
+
+  <div class="deck-container">
+	<%counter = 0%>
+<!-- Begin slides. Just make elements with a class of slide. -->
+<%include modules/header.tt%>
+
+<script>
+	var voicez={};
+	var variantz={};
+	<%if knot.exemplar_session%>
+		<% voicevariantz = knot.exemplar_session.get_voicevariants %>
+	<%else%>
+		<% voicevariantz = knot.knot_id.get_voicevariants %>
+	<%end%>
+	<% last_id=0 %>
+	<%foreach v in voicevariantz %>
+		<%if last_id != v.vorlage_id%>
+			voicez[<%v.vorlage_id%>]={};
+			variantz[<%v.vorlage_id%>]={};
+			words['<%v.vorlage_id%>']=voicez[<%v.vorlage_id%>]['<%v.voice%>'];
+			</script>
+			<section class="slide" knot_id="<%v.vorlage_id%>" id="folio-<%v.vorlage_id%>" <%if counter>10%>style="display:none;"<%end%>>
+				     <audio onpause="audiotext_pause()"  style="width:200px;" class='bottom-left-corner logos' phrase_id="<%v.vorlage_id%>" id="logos_<%v.vorlage_id%>" controls>
+						<source id="ogg_<%v.vorlage_id%>" type="audio/ogg">
+						<source id="mp3_<%v.vorlage_id%>" type="audio/mp3">
+						    Your browser does not support the audio format.
+				     </audio>
+					<div id="content-<%v.vorlage_id%>"  style="margin:15vh 5vw; width:90vw;height:70vh;">
+						 <div class="phrase" id="words_<%v.vorlage_id%>" style="display:block;;width:90vw;height:70vh;margin-right:1vw;float:left;"></div>
+						 <img id="illustration-<%v.vorlage_id%>" style="max-height:77vh; width:0px;margin-top:5vh;" src=""/>
+					</div>
+			</section>
+			<script>
+		<%end%>
+
+		<%last_id=v.vorlage_id%>	
+		variantz["<%v.vorlage_id%>"]["<%v.voice%>"]="<%v.variant_id%>";
+		voicez["<%v.vorlage_id%>"]["<%v.voice%>"]=[<%v.autx_content | replace('_\d+_','',g) | replace('\t','',g) %>];
+		//this needs to be fixed 
+		vorlagen["<%v.vorlage_id.substr(0,40)|uri%>"]="<%v.vorlage_id%>";
+		vorlagen_rev[<%v.vorlage_id%>]="<%v.vorlage_id.substr(0,40)|uri%>";
+	<%END%>
+</script>
+
+<script>
+	var audioDfr={};
+	var current_id;
+	$(".logos").on('canplay', function() {
+		try {
+			audioDfr[$(this).attr('phrase_id')].resolve();
+		}
+		catch {1;}
+	});
+
+	$(".logos").on('ended', function() {
+	      timeouts=[];
+	      window.setTimeout($.deck,2000,'next');
+	});
+
+	$(".logos").on('play', function() {
+		//$(".word").css('background-color','red');
+		var i=0;
+		var start=0;
+		audio_playing=true;
+		phrase_id=$(this).attr('phrase_id');
+		console.log("PLAYIN AUDIO",fragment_playing);
+		$.when(audioDfr[phrase_id]).done(function() {
+			if (!timeouts.length && !fragment_playing) {
+				//console.log("NO TIMEOUTS");
+				pl(phrase_id);
+				//window.setTimeout(pl,2000,phrase_id);
+			}
+			else {
+				console.log("ELSE");
+				for (var i=0; i<timeouts.length; i++) {
+				    timeouts[i].resume();
+				}
+				//$(".token:even").css("color", "#0F0");
+				//$(".token:odd").css("color", "#00F");
+			}
+		});
+	});
+
+	function play_fragment(start,stop,phrase,self) {
+	    $('.token').css('opacity','0.2');
+	    $(self).css('opacity',1);
+	    stop_all_markers();
+	    track=$('#logos_'+phrase)[0];
+	    track.currentTime=(start)/1000;
+	    //track.playbackRate.value = 2;
+	    fragment_playing=true;
+	    track.play();
+	    stop_all_markers();
+	    new Timer(stop_all_audio,(stop)-start);
+	}
+	$(".slide").on('click', function() {
+		if ($(this).attr('container')) {
+			$(location).attr('href','/'+$(this).attr('knot_id')+'/play');
+		}
+	});
+	function pl(phrase_id) {
+		var start=0;
+		for (let word of words[phrase_id]) {
+			console.log(word);
+			if ("start" in word) {
+				//start=parseInt(word.start)/playbackRate-1000;
+				start=parseInt(word.start)/playbackRate;
+			}
+			stop=parseInt(word.stop)/playbackRate;
+			//console.log("WTF"+" "+parseInt(stop)+" "+parseInt(start));
+			if (stop-start) {
+				//console.log("GOOD");
+				//console.log(word.id+" "+start+" "+stop+" "+(stop-start)); 
+				//timeouts.push(new Timer(function() {$("#"+word.id+'_'+phrase_id).css("border-color",$("#"+word.id+'_'+phrase_id).css("color"));}, start));
+				//timeouts.push(new Timer(function () {$("#"+word.id+'_'+phrase_id).css("border-color",'white');}, word.stop/playbackRate));
+				timeouts.push(new Timer(function() {$("#"+word.id+'_'+phrase_id).css("opacity",'1');}, start));
+				timeouts.push(new Timer(function () {$("#"+word.id+'_'+phrase_id).css("opacity",'0.2');}, word.stop/playbackRate));
+			}
+			//start=parseInt(word.stop)/playbackRate-1000;
+			start=parseInt(word.stop)/playbackRate;
+		}
+	};
+</script>  
+
+    <!-- End slides. -->
+    <!-- Begin extension snippets. Add or remove as needed. -->
+    <!-- deck.navigation snippet -->
+    <div aria-role="navigation">
+      <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+      <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+    </div>
+  </div>
+
+<!-- Required JS files. -->
+<script src="/css/deck/core/deck.core.js"></script>
+<script src="/css/deck/extensions/navigation/deck.navigation.js"></script>
+<script>
+
+	$(document).bind('deck.init', function() {
+	    hash=(document.URL.substr(document.URL.indexOf('#')+1));
+	    //this still needs to be fixed to allow crossreferencing with other templates
+	    if (vorlagen[hash]) {
+		current_id=vorlagen[hash];
+		$('#folio-'+current_id).css("display","block");
+		console.log("going to folio-"+current_id);
+		$.deck('go','folio-'+current_id);
+	    } else {
+		    current_id=$.deck('getSlide').attr('knot_id');
+		    console.log($.deck('getSlide'));
+	    	    console.log("SET CURR"+current_id);
+	    }
+	    init_voicelist(current_id);
+            set_voice(current_id,preferred_voice);
+	    $('#words_'+current_id).css("display","block");
+	    show_illustration(current_id);
+		if (backgrounds[current_id][0]) {
+				$('#words_'+current_id).css('width','60%');
+				$('#illustration-'+current_id).css('width','35%');
+				$('#illustration-'+current_id).attr('src',illustration(current_id));
+		}
+
+	    //textFit($('#words_'+current_id)[0],{maxFontSize:150});
+	    textFit($('#header'),{maxFontSize:150});
+	   try {
+		$("#voiceSelect option[voice='"+preferred_voice+"']").attr("selected","selected");
+	   } catch {}
+	  // $('#logos_'+current_id)[0].play();
+	});
+
+
+
+	const AudioContext = window.AudioContext || window.webkitAudioContext;
+	const audioCtx = new AudioContext();
+	$(function() {
+		    $.deck('.slide');
+		    $('*').css('font-family',font);
+	});
+
+	function stop_all_audio() {
+		$('audio').each(function(){
+			  this.pause();
+			  this.currentTime=0;
+		});
+		fragment_playing=false;
+	}
+
+	function stop_all_markers() {
+		$('.token').css('border-color','white');
+		for (var i=0; i<timeouts.length; i++) {
+		    timeouts[i].stop();
+		}
+		timeouts=[];  
+	}
+
+
+        function init_tokens(new_id) {
+			old_stop=0;
+			$('#words_'+new_id).empty();
+			for (let word of words[new_id]) {
+				if (word.w != '_') {
+					//following 6 lines necessary due to backwards compability with audiotexts without "start" text
+					if (!word.start) {
+						start=old_stop;
+					} else {
+						start=word.start;
+					}
+					old_stop=word.stop;
+					$('#words_'+new_id).append('<div class="token" onclick="play_fragment('+start+','+word.stop+','+new_id+',this)" id="'+word.id+'_'+new_id+'">'+word.w+'</div>');
+				}
+			}
+	    textFit($('#words_'+new_id)[0],{maxFontSize:150});
+        }	
+	function new_slide(new_id,old_id) {
+			current_id= ($.deck('getSlide').attr('knot_id'));
+			console.log("CURRR"+current_id+"NEWID"+new_id+"OLDID"+old_id);
+			if (old_id==new_id) {
+				new_id=current_id;
+			}
+			//init_tokens(new_id);
+			$('#words_'+new_id).css("display","block");
+			textFit($('#words_'+new_id)[0],{maxFontSize:200});
+			stop_all_audio();
+			stop_all_markers();
+			$('#logos_'+new_id)[0].play();
+	}
+
+	$( window ).resize(function() {
+	    new_id=$.deck('getSlide').attr('knot_id');
+	    textFit($('#words_'+new_id)[0],{maxFontSize:200});
+
+	});
+
+	function show_illustration(folio_id) {
+		if (!(folio_id in backgrounds)) {
+			$.ajax({                                            
+			 url: '/api/get_illustrations_simple/'+folio_id,                        
+			 async:false,
+			 success: function(data)          
+			 { 
+				backgrounds[folio_id]=data;
+			 },
+		});
+		}
+		//display illustration
+		if (backgrounds[folio_id][0]) {
+				$('#words_'+folio_id).css('width','60%');
+				$('#illustration-'+folio_id).css('width','35%');
+				$('#illustration-'+folio_id).attr('src',illustration(folio_id));
+		}
+	
+	}
+
+	$(document).bind('deck.change', function(event, from, to) {
+		old_id=$.deck('getSlide',from).attr('knot_id');
+                $('#words_'+old_id).empty();
+		var new_id=$.deck('getSlide',to).attr('knot_id');
+    		active_token=vorlagen_rev[new_id];
+    		$("#read_link").attr("href","/<%knot.knot_id%>/read/#"+active_token);
+		console.log("CHANGE",to,new_id);
+		current_id=new_id;
+		//(($('#folio-'+new_id).find('.token:even').css('border-color','#0F0');
+		$('#folio-'+new_id).find('.token').css('border-color','#FFF');
+
+		//activating the next invisible slide
+		try {
+			var next_id=$.deck('getSlide',to+1).attr('knot_id');
+			$('#folio-'+next_id).css("display","block");
+		}
+		catch { 1; }
+		if (!(new_id in audioDfr)) {
+			audioDfr[current_id]=$.Deferred();
+		}
+		show_illustration(new_id);
+		init_voicelist(new_id);
+		set_voice(new_id,preferred_voice);
+		new_slide(new_id,old_id);
+		//window.setTimeout(new_slide,1000,new_id,old_id);
+	});
+
+	function init_voicelist(new_id) {
+		//reset voicelist, for it can be different from slide to slide
+		$('#voiceSelect').empty();
+		for (const [voice_option, variant] of Object.entries(voicez[new_id])) {
+		  console.log(voice_option,variant);
+		  $('#voiceSelect').append($('<option>').attr('autx_content',variant).attr('voice',voice_option).text(voice_option));
+		}
+		try {
+			$("#voiceSelect option[voice='"+preferred_voice+"']").attr("selected","selected");
+		} catch(e) {
+			console.log(e);
+		}
+		console.log($('#voiceSelect'));
+	}
+	$('#fontSelect').change(function() {
+		var font=this.value;
+		$.ajax({                                            
+			 url: '/api/memcache/font/'+font,                        
+			 async:false,
+			 success: function(data)          
+			 { 
+				console.log("DAT"+data);
+			 },
+		});
+
+		$('*').css('font-family',this.value);
+		textFit($('#words_'+$.deck('getSlide').attr('knot_id'))[0],{maxFontSize:200});
+	});
+
+	$('#tempoSelect').change(function() {
+		stop_all_audio();
+		stop_all_markers();
+		playbackRate=this.value;
+		$('audio').each(function(){
+			  this.playbackRate=playbackRate;
+		});
+		//$(".token:even").css("color", "#0F0");
+		//$(".token:odd").css("color", "#00F");
+		//$(".token").css("background-color","white");
+		$('#logos_'+$.deck('getSlide').attr('knot_id'))[0].play();
+	});
+	//pause player on spacebar
+	$(document).on('keyup',function(e){
+		if(e.keyCode==32) {
+			current_audio=$('#logos_'+$.deck('getSlide').attr('knot_id'))[0];
+			if (current_audio.paused) {
+				current_audio.play();
+				audio_playing=false;
+			}  else {
+				current_audio.pause();
+			}
+		}
+	});
+
+</script>
+<%include modules/shiva.tt%> 
+

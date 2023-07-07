@@ -1,0 +1,17 @@
+<!--Code below is creation of its author. All rights reserved. Any replication of the code of its part without explicit consent prohibited.-->
+<%#Code below is property of Daniel Devatman Hromada. All rights reserved. Any replication without explicit consent of the author prohibited.%><%use date%><%use ListUtil%>
+<!DOCTYPE html>
+<html style="width:100vw;">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <meta name="author" content="Daniel Devatman Hromada, wizzion.com CEO and Juniorprofessor at Berlin University of the Arts / Einstein Center Digital Future">
+  <meta name="description" content="<%knot.knot_content.replace('<.*>','').replace('"','')%>">
+  <meta name="keywords" content="<%knot.knot_name.replace('\+\+',',')%>">
+  <title>digitale Fibel :: <%knot.knot_name.replace('Curriculum\+\+','').replace('\+\+',' - ')%> :: <%template_name%></title>
+  <link rel="stylesheet" media="screen" href="/css/fibel.css">
+  <link rel="stylesheet" media="screen" href="/css/fibel/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/textfit.js"></script>

@@ -1,0 +1,94 @@
+<script>
+	$(document).on('keyup',function(e){
+		k_c=(`${event.code}`);
+		console.log(k_c);
+		switch(k_c) {
+		case 'Numpad8':
+			window.location.href='/'+$("#level"+($('.ancestors').length-2).toString()).val()<%if template_name=='knot'%>+'/knot'<%end%>;
+			//$("#up_button").click();
+			break;
+		case 'Numpad2':
+			$("#refresh").click();
+			break;
+		case 'NumpadEnter':
+			window.location.href='knot';
+			break;
+		case 'NumpadAdd':
+			window.location.href='explore';
+			break;
+		
+		<%if template_name == 'knot'%>
+		case 'Numpad6':
+			window.location.href='/'+(parseInt(<%knot.knot_id%>)+1).toString()+'/knot';
+			break;
+		<%end%>
+		<%if template_name!='knot'%>
+			case 'ArrowUp':
+				$("#up_button").click();
+				break;
+			case 'ArrowDown':
+				$("#refresh").click();
+				break;
+			case 'Backquote':
+				if ($("#hamburger_generic").css('visibility')=='visible') {
+					$("#hamburger_generic").trigger("click");
+				} else {
+					$("#cross_generic").trigger("click");
+				}
+				break;
+			<%if template_name=='palope'%>
+				case 'Space':
+					current_audio=$('#logos_'+current_id)[0];
+					if (current_audio.paused) {
+						$(current_audio.play());
+					}  else {
+						$(current_audio.pause());
+					}
+					break;
+				<%end%>
+			case 'Digit1':
+				console.log("left1");
+				$(".left1")[0].click();
+				break;
+			case 'Digit2':
+				$(".left2")[0].click();
+				break;
+			case 'Digit3':
+				$(".left3")[0].click();
+				break;
+			case 'Digit4':
+				$(".left4")[0].click();
+				break;
+			case 'Digit5':
+				$(".left5")[0].click();
+				break;
+			case 'Digit6':
+				$(".left6")[0].click();
+				break;
+			case 'Digit7':
+				$(".left7")[0].click();
+				break;
+			case 'Digit8':
+				$(".left8")[0].click();
+				break;
+			case 'NumpadAdd':
+				$("#square")[0].click();
+				break;
+			case 'KeyQ':
+				$("#option0 > span >a")[0].click();
+				break;
+			case 'KeyW':
+				$("#option1 > span >a")[0].click();
+				break;
+			case 'KeyA':
+				$("#option2 > span >a")[0].click();
+				break;
+			case 'KeyS':
+				$("#option3 > span >a")[0].click();
+				break;
+		<%end%>
+	}
+
+	});
+
+</script>

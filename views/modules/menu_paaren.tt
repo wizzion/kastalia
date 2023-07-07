@@ -1,0 +1,31 @@
+  <button id="hamburger_paaren" class="top-right-corner">🎴</button>
+  <button id="cross_paaren" class="top-right-corner cross">❌</button>
+
+<div id="menu_paaren" class="menu">
+			<audio id="player">
+				<source id="ogg_src" type="audio/ogg" />
+			</audio>
+
+		<li>
+			Schwierigkeit <select id="difficultyList"><option selected disabled>Schwierigkeit</option></select>
+		</li>
+</div>
+ <script>
+$("#hamburger_paaren").click(function() {
+  $(this).css('visibility','hidden');
+  $('#cross_paaren').css('visibility','visible');
+  $("#menu_paaren").slideToggle();
+  $("#menu_paaren").css('visibility','visible');
+  $("#menu_generic").css('visibility','hidden');
+  $("#hamburger_generic").css('visibility','visible');
+  $("#cross_generic").css('visibility','hidden');
+
+});
+$("#cross_paaren").click(function() {
+  $(this).css('visibility','hidden');
+  $('#hamburger_paaren').css('visibility','visible');
+  $("#menu_paaren").slideToggle();
+});
+</script>
+
+

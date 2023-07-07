@@ -1,0 +1,452 @@
+<%use date%>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+
+  <title><%knot.knot_name%> :: fibel.digital</title>
+
+  <!-- Extension CSS files go here. Remove or add as needed. -->
+
+  <link rel="stylesheet" media="screen" href="/css/oikos.css">
+  <link rel="stylesheet" media="screen" href="/css/fibel/style.css">
+  <script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+
+  <script type="text/javascript">
+    tinyMCE.init({
+      mode : "textareas",
+  plugins: "code lists advlist image table",
+forced_root_block : false,
+relative_urls : false,
+remove_script_host : false,
+convert_urls : true,
+height:"300"
+    });
+    </script>
+
+<%if a.font_url%>
+<style>
+@font-face {
+  font-family: knotFont;
+  src: url(<%a.font_url%>);
+}
+* { font-family: knotFont; font-size: 1vw;}
+
+.mceEditor > table { 
+    height:1200px !important; 
+} 
+</style>
+<%end%>
+		<% INCLUDE "modules/jquery_default.tt" %>
+</head>
+<body>
+	<div id="brahma">
+		<% INCLUDE "layouts/brahma.tt" %>
+	</div>
+	<div id="vishnu" class="clearfix">
+ <div class="column menu element">
+	<h1 class="element-title">Knot <%knot.knot_id%> has <%subjects.size%> dendrites</h1>
+	<ul>
+		<% FOREACH subject IN subjects%>
+			<li>
+					<a href="/<%subject.subject_id%>/knot">🔗</a> <%if user_id%><a href="/<%subject.subject_id%>/annotate">📜</a><%end%> <span kid="<%subject.subject_id%>" class="update_related" contenteditable="true"><%subject.subject_name%></span> (<%subject.predicate%>) weight <span contenteditable="true" class="relationship_strength" bid="<%subject.bound_id%>"><%subject.ord%></span>
+				<%if user_id%><span class="delete_bound" bid="<%subject.bound_id%>">❌</span><%end%>
+			</li>
+		<% END %>
+	</ul>
+	<h1 class="element-title">Attributes</h1>
+	<ul>
+		<% FOREACH key IN a.keys%>
+			<li>
+				<%key%>
+				<%if knot.knot_content%>
+					:: 
+				<%end%>
+				<%if key=='ogg_url' or key=='default_ogg_woman' or key=='default_ogg_man' or key=='speech_url'%>
+					<!--<a href="<%a.ogg_url%>"><%a.ogg_url%></a>-->
+					<audio controls height="100" width="100">
+					  <source src="<%a.$key%>" type="audio/wav">
+					</audio>
+				<%elsif key.match('_url$')%>
+					<a href="<%a.$key%>"><%a.$key%></a>
+				<%elsif key=='next_exercise'%>
+					<a href="/<%a.next_exercise%>"><%a.next_exercise%></a>
+				<%elsif key=='template'%>
+					<a href="/templates/<%a.$key%>.tt"><%a.$key%></a>
+				<%elsif key=='transcription_candidates'%>
+					<select id="transcriptions"></select>
+					<script>
+						transcription_candidates=<%a.$key%>;
+						var options = transcription_candidates.map(function(val, ind){
+						    $('#transcriptions').append($("<option></option>").val(val).html(val));
+						});
+						$('select').change(function() {$('#knot_content').html(this.value)});
+					</script>
+				<%else%>
+					<%if a.$key%>
+						<span kid="<%knot.knot_id%>" class="update_attribute" attr_name="<%key%>" contenteditable="true"><%a.$key%></span>
+					<%else%>
+						<span kid="<%knot.knot_id%>" class="update_attribute" attr_name="<%key%>" contenteditable="true">&nbsp;&nbsp;</span>
+					<%end%>
+				<%end%>
+			</li>
+		<% END %>
+	</ul>
+	<%if user_id%>
+			<div>
+				<form method="post" action="/create_attribute/">
+					<table>
+					<tr>
+						<td>Attr. Name : <input type="text" name="name"/>
+						<td><input type="checkbox" name="apply_children">Apply on <select name="predicate" class="predicate"><%include modules/predicatelist.tt%></select> objects
+<br/>					</tr><tr>
+						<td>Attr. Value : <input type="text" name="value"/>
+						<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+						<td><input type="checkbox" name="apply_grandchildren">Apply on 2 generations<br/>
+					</table>
+					<input type="submit" value="Add / Modify Attribute"/>
+				</form>
+			</div>
+	<%end%>
+
+	</div>
+
+ 		<div class="column content element">
+
+		<%include modules/materialized_path.tt%>
+<div class="element-title" contenteditable="true" id="knot_name"> <%knot.knot_name%></div> 
+<!--			<div class="element-content" contenteditable="true" id="knot_content">::<%knot.knot_content%></div> -->
+			<div class="element-content" contenteditable="true" id="knot_content">
+				<% if !knot.knot_content%>::<%end%>
+				<%knot.knot_content%>
+			</div>
+			
+			<!--<% if a.source_url %>Source URL: <a href="<%a.source_url%>"><%a.source_url%></a><br/><br/><%end%>-->
+			<% if a.img_url %>
+
+			<div class="element-image">
+					<img src="<%a.img_url%>"/>
+			</div>
+			<%end%>
+			<% if a.screenshot_url %>
+			<div class="element-image">
+					<img src="<%a.screenshot_url%>"/>
+			</div>
+			<%end%>
+			<% if a.fulltext_url %>
+					<iframe src="<%a.fulltext_url%>" type="application/pdf" style="width:100%; height:500px;"></iframe>
+			<%end%>
+
+			<%if a.video_url%>
+			<div class="video-embed">
+					<video width="61%" controls autoplay loop src="<%a.video_url%>"/>
+			</div>
+			<%end%>
+	<%if user_id%>
+		<input type="checkbox" id="html_encode_switch">WYSIWYG EDITOR</a>
+		  <form method="post" action="/update_content">
+			<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+			<div id="content_area" style="display:none">
+			<textarea name="knot_content">
+				<%knot.knot_content%>
+			</textarea>
+		      <input type="submit" value="Save" />
+			</div>
+		</form>
+	<%end%>
+
+	<%if user_id%>
+			<div class="element-title">Views</div>
+			<br>
+				<a class="viewlink" href="/<%knot.knot_id%>">Default</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/knot/">🪢 knot</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/explore/">⊞ explore</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/arbre/">🌳 arbre</a>
+				<!--<a class="viewlink" href="/view/<%knot.knot_id%>/pannellum/">Pannellum</a>-->
+<!--				<a class="viewlink" href="/view/<%knot.knot_id%>/naive/">Naive</a>-->
+<!--				<a class="viewlink" href="/typ/<%knot.knot_id%>">Typ</a>-->
+<!--				<a class="viewlink" href="/vk_slides/<%knot.knot_id%>">VK-slides</a>
+				<a class="viewlink" href="/kum_slides/<%knot.knot_id%>">KuM-slides</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/narrative/">Narrative</a>-->
+<!--				<a class="viewlink" href="/view/<%knot.knot_id%>/knoids/">Knoids</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/presentation1/">Presentation</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/textrec/">Textrec</a>-->
+				<a class="viewlink" href="/view/<%knot.knot_id%>/musicrec/">🎶 musicrec</a>
+<!--				<a class="viewlink" href="/view/<%knot.knot_id%>/repetitio/">Repetitio</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/bildung/">Bildung</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/reveal/">Reveal</a>-->
+<!--				Notes (<a class="viewlink" href="/<%knot.knot_id%>/notes_prepare/">Prepare</a>,<a class="viewlink" href="/<%knot.knot_id%>/notes_segment">Segment</a>)-->
+				<a class="viewlink" href="/view/<%knot.knot_id%>/play/" title="hören">👂 play</a>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/recite/" title="recite">🎤 recite</a>
+<!--				<a class="viewlink" href="/<%knot.knot_id%>/iswisk/">ISWISK</a>-->
+				<%if knot.img_url%>
+					<a class="viewlink" href="/view/<%knot.knot_id%>/annotate/">✍️ annotate</a>
+					<%if knot.annotation%>				
+						<a class="viewlink" href="/view/<%knot.knot_id%>/foliorec/">📜👄 foliorec</a>
+						<a class="viewlink" href="/view/<%knot.knot_id%>/folio/">📜 folio</a>
+					<%end%>
+				<%end%>
+				<a class="viewlink" href="/view/<%knot.knot_id%>/read/" title="lesen">👄 read</a>
+				<!--<a class="viewlink" href="/<%knot.knot_id%>/symphonie/">Symphonie</a>-->
+				<a class="viewlink" href="/<%knot.knot_id%>/paaren/" title="paaren">🎴 paaren</a>
+				<a class="viewlink" href="/<%knot.knot_id%>/test/" title="testen">💯 testen</a>, <a title="lernen" class="viewlink" href="/<%knot.knot_id%>/learn/">👩🏼‍💻 trainieren</a>
+				<!--<a class="viewlink" href="/view/<%knot.knot_id%>/waldorf/">Waldorf</a>-->
+
+
+		<div class="element-title">Actions</div>
+			<form method="post" action="/bookmark">
+				<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+				<input type="submit" value="Bookmark"/>
+			</form>
+			<form method="post" action="/split">
+				<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+				<input type="submit" value="Split"/>
+			</form>
+			<form method="post" action="/ocr_img">
+				<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+				<input type="submit" value="OCR"/>
+			</form>
+			<form method="post" action="/speech_segment">
+				<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+				<input type="submit" value="Segment & Transcribe Speech"/>
+			</form>
+			<button class="switch" id="create_child_switch">Add Related Knot</button>
+			<button class="switch" id="create_bound_switch">Establish Relation</button>
+			<button class="switch" id="create_propagate_switch">Propagate</button>
+			<button class="switch" id="attach_file_switch">Attach File</button>
+			<div id="create_child" style="display:none;" class="action">
+				<form method="post" action="/insert/">
+					Name : <input style="width:80%" type="text" value="<%knot.knot_name%>++" name="name"/><br/>
+					Content : <textarea style="width: 100%" name="content"/></textarea>
+					<input type="hidden" name="parent_id" value="<%knot.knot_id%>"/>
+					<br/>
+					<select name="predicate" class="predicate">
+						<%include modules/predicatelist.tt%>
+					</select>
+					<input type="submit" value="Add Related Knot"/><br/>
+				</form>
+			</div>
+			<div id="attach_file" style="display:none" class="action">
+				<form method="post" action="/attach_file/" enctype="multipart/form-data">
+					<input type="file" name="data"/>
+					<input type="hidden" name="knot_id" value="<%knot.knot_id%>"/>
+					<input type="text" title="img_url, speech_url, fulltext_url, ogg_url" name="attribute_name" value="img_url"/>
+					<input type="submit" value="Attach File"/>
+				</form>
+			</div>
+
+			<div id="create_propagate" class="action" style="margin:0px;text-aling:center;">
+				<center>
+				The real fun starts here ;)<br/><br/>
+				<form method="post" action="/propagate/">
+					<input type="hidden" name="kid" value="<%knot.knot_id%>">
+					Let's define "source set" (🚰) as those knots which are associated to <%knot.knot_name%> with predicate <select name="source" class="predicate"><%#include modules/predicatelist.tt%><option value="is_member">is_member</option></select>.<br/><br/>
+					Let's define "target set" (🎯) as those knots which are connected to 🚰 through <select name="target" class="predicate"><%include modules/predicatelist.tt%></select>.<br/><br/>
+					Let's define "replication set" (🧬) as those knots which are connected to 🚰 through predicate <select id="select_replicate" name="replicate" class="predicate"><%include modules/predicatelist.tt%></select> which is to be replicated.<br/><br/>
+					By clicking on "Propagate", You will create a set of bounds <br/><br/> <b>🧬 <span id="span_replicate">🧬</span> 🎯</b>.<br/><br/>
+					(E.g. choose "is_member" in 1st select box, "translates" in 2nd select box and "illustrates" in 3rd select box to add illustrations to new language lexicons)<br/><br/>
+					<input type="submit" value="Propagate"/>
+				</form>
+				</center>
+			</div>
+			<div id="create_bound" class="action" style="margin:0px;">
+				<form method="post" action="/create_bound/">
+					<%knot.knot_name|replace('^.*\+\+','')%> 
+					<select name="predicate" class="predicate"><%include modules/predicatelist.tt%></select>
+					<!--of
+					<select name="target_id2">
+						<option value=""></option>
+						<%FOREACH b IN bookmarks%>
+							<option value="<%b.obj_id%>"><%b.obj_name%></option>
+						<%END%>
+					</select>
+ 					--> id(s) <input type="text" name="target_id"  id="target_id" value="<%t='container_id'%><%t.get_session_key%>" <%t='last_created_name'%>title="<%t.get_session_key%>"/>
+ 					or name <input class="smallint" type="text" name="target_name"  id="target_name" style="width:200px;"/>
+<!--(<%t='last_created_name'%><%t.get_session_key%>)-->
+
+					<input type="hidden" name="origin_id" value="<%knot.knot_id%>"/>
+					<!--
+					Target role :
+					<select name="target_role">
+							<option value="sub">subject</option>
+							<option value="obj">object</option>
+					</select>
+					-->
+					<input type="hidden" target_role="sub"/>
+				with strength: <input class="smallint" type="text" name="strength" value="1"/>
+					Flip roles ? <input type="checkbox" name="flip_roles"/>
+					<input type="submit" value="Create Bound"/>
+				</form>
+			</div>
+		<%end%>
+
+		<div class="element-title" style="margin-top:50px;"><%objects.size%> Axones <button onclick="reorderAxons()">Flip order</button></div>
+			<script>
+				function reorderAxons() {
+					var list = $('#axon_list');
+					var listItems = list.children('li');
+					list.append(listItems.get().reverse());	
+				}
+			</script>
+                      
+			<ul style="list-style-type:none;" id="axon_list">
+			<%axon_counter=0%>
+			<% FOREACH object IN objects%>
+				<li class="element">
+					<div class="element-title" style="font-size:1em">
+						<%if user_id%><span class="delete_bound" bid="<%object.bound_id%>">❌</span><%end%>
+						 <a href="/view/<%object.object_id%>/knot">🔗</a> <%knot.knot_name%> &nbsp; <%object.predicate%> <%if user_id%><a href="/<%object.object_id%>/annotate">📜</a><%end%> <span contenteditable="true" kid="<%object.object_id%>" class="update_related"><%object.object_name%></span>
+			(ID: <span class="knot_id"><%object.object_id%></span> :: weight <span contenteditable="true" class="relationship_strength" bid="<%object.bound_id%>"><%object.ord%></span>) 
+				<!--
+				<a href="/view/<%object.object_id%>/textrec" target='_blank'> :: TEXTREC :: </a>
+				<a href="/view/<%object.object_id%>/foliorec" target='_blank'> :: FOLIOREC :: </a>
+				-->
+					</div>
+					<%object.object_content%>
+					<%if object.img_url%><img src="<%object.img_url%>" width=300><%end%>
+					<%if object.fulltext_url%><iframe src="<%object.fulltext_url%>" type="application/pdf" style="width:100%; height:500px;"></iframe><%end%>
+	                                <%if object.ogg_url%>
+                                        <audio style="width:120px;" controls>
+                                          <source src="<%object.ogg_url%>" type="audio/wav">
+                                        </audio>
+					<%end%>
+				</li>
+
+			<% END %>
+			</ul>
+
+		<div id="create_bound" class="action">
+				<form method="post" action="/create_bound/">
+					Target 
+					<select name="target_id2">
+						<option value=""></option>
+						<%FOREACH b IN bookmarks%>
+							<option value="<%b.obj_id%>"><%b.obj_name%></option>
+						<%END%>
+					</select>
+ 					or has id <input class="smallint" type="text" name="target_id"/>
+					<input type="hidden" name="origin_id" value="<%knot.knot_id%>"/>
+					<!--
+					Target role :
+					<select name="target_role">
+							<option value="sub">subject</option>
+							<option value="obj">object</option>
+					</select>
+					-->
+					<input type="hidden" target_role="sub"/>
+					<select name="predicate" class="predicate"><%include modules/predicatelist.tt%></select>
+					Strength: <input class="smallint" type="text" name="strength" value="1"/>
+					<input type="submit" value="Create Bound"/>
+				</form>
+			</div>
+			<br/>
+<!--
+<%if user_id%>
+	<h1 class="element-title">Zeitgeist Log</h1>
+	<%#foreach z in zeitgeist#>
+	<div class="element">
+		<%z.action_executed%> <%z.agent%> executed <%z.action%> with variables <%z.vars%>
+	</div>
+	<%#end%>
+<%end%>
+-->
+<div id="shiva">
+	<% INCLUDE "modules/shiva.tt" %>
+</div>
+
+<script>
+<%if a.flip %>
+$( document ).ready(function() {
+    reorderAxons();
+});
+<%end%>
+
+$('.switch').click(function(e) {
+	var action = $(this).attr('id').replace("_switch","");
+	$('#'+action).toggle();	
+});
+
+
+$('#html_encode_switch').click(function(e) {
+		$('#content_area').toggle();
+
+});
+
+//populate target of "establish relation" form whenever knot_id is clicked upon
+$('.knot_id').click(function(e){                
+     $("#target_id").val(e.target.innerHTML);        
+});    
+/*
+$('.delete_bound').click(function(e) {                    
+  var bound_id = $(this).attr('bid');
+  if (confirm("You are planning to destroy relation between two knots. Are You sure You know what You are doing?")) {
+	  $.post("/destroy_bound/", {bid:bound_id}, function(data) {});
+	  $(this).parent().hide();	
+  }
+});
+*/
+/*$('.relationship_strength').click(function(e) {                    
+  var bound_id = $(this).attr('bid');
+  var ord = $(this).html();
+  $.post("/change_ord/", {bid:bound_id,ord:ord}, function(data) {});
+});
+*/
+
+$('#select_replicate').on('change', function() {
+  $("#span_replicate").text(this.value);
+});
+
+(function ($) {
+    $.fn.wysiwygEvt = function () {
+        return this.each(function () {
+            var $this = $(this);
+            var htmlold = $this.html();
+            $this.bind('blur', function () {
+                var htmlnew = $this.html();
+                if (htmlold !== htmlnew) {
+			var elements = {};
+			elements[$this.attr("id")] = htmlnew;
+        	    //var str = $this.attr("id")+"="+escape((htmlnew.replace(/(\r\n|\n|\r)/gm,"")));
+        	    //var str = $this.attr("id")+"="+escape(htmlnew.replace(/(\r\n|\n|\r|\t)/gm,""));
+        	    //var str = $this.attr("id")+"="+encodeURI(htmlnew.replace(/(\r\n|\n|\r|\t)/gm,""));
+                    //$this.trigger('change')
+			if ($this.attr("class")=="relationship_strength") {
+				var bid = $(this).attr('bid');
+				var ord = $(this).html();
+				$.post("/api/ajax_change_ord/", {bid:bid,ord:ord});
+			} 
+			else if ($this.attr("class")=="update_related") {
+				var kid = $(this).attr('kid');
+				$.post( "/api/ajax_update/"+kid,{knot_name:$(this).html()});
+			} 
+			else if ($this.attr("class")=="update_attribute") {
+				var kid = $(this).attr('kid');
+				var attribute_name = $(this).attr('attr_name');
+				console.log("UPDATING ATTRIBUTE"+kid);
+				$.post( "/api/update_attribute/"+kid,{'name':attribute_name,'value':$(this).html()});
+			} 
+			else {
+				var elements = {};
+				elements[$this.attr("id")] = htmlnew;
+				$.post( "/api/ajax_update/<%knot.knot_id%>",elements);
+			}
+                }
+            })
+        })
+    }
+})(jQuery);
+$('[contenteditable=true]').wysiwygEvt();
+$(".predicate").val("<%t='last_predicate'%><%t.get_session_key%>");
+</script>
+<!--
+		<div class="element-title" style="margin-top:50px;">Arbre</div>
+		<div>
+			<iframe src="/view/<%knot.knot_id%>/arbre/" style="z-index:-100;" width="1900" height="1200"/>
+		</div>
+
+-->
+</body>
+</html>

@@ -1,0 +1,226 @@
+<%#Code below is property of wizzion.com UG. All rights reserved. Any replication without explicit consent of the author prohibited.%>
+<%use date%><%use ListUtil%>
+<%include modules/brahma.tt%>
+  <link rel="stylesheet" media="screen" href="/css/fibel.css">
+  <style>* {overflow:hidden;}
+	.word {font-size:0px;z-index:20;background-color:rgba(0,0,0,0); text-align:center;line-height:1em;;opacity:0;border:solid 2pt red; cursor:pointer;color:rgba(255,0,0,255); margin-left:0px;margin-top:0px;z-index:100;position:absolute;}
+	#utterance {line-height:normal;}
+</style>
+
+</head>
+  <body style="overscroll-behavior:none;width:100vw;height:100vh;margin:0px;overflow:hidden;position:fixed;">
+<script src="/js/jquery.min.js"></script>
+<script src="/js/textfit.js"></script>
+
+<%include modules/header.tt%>
+<%include "modules/menu_play.tt"%>
+
+	<div class="phrase" id="words_<%knot.knot_id%>" style="overflow:hidden;background-size:contain;background-repeat:no-repeat;background-position:left top;margin-top:100px;background-image:url(<%a.img_url%>);width:90vw;height:calc(100vh - 100px);" />
+	</div>
+	<div id="utterance" style="position:absolute;right:5vw;width:40vw;height:60vh; left:40vw; top:15vh;z-index:50;"></div>
+
+<!--	     <div id="timestamps">-->
+		<script>
+			var playbackRate=1;
+			var rois={};
+			//creation of inverted indices of ROIs is slightly sub-optimal but, well, it's too late to change it...historical reasons ;)
+			$([<%a.annotation%>]).each(function(index,roi) {
+				console.log(roi);
+				rois[roi['id']]={"ocr":roi["ocr"],"left":roi["left"],"top":roi["top"],"width":roi["width"],"height":roi["height"]};
+			});
+			var voices={};
+			<%foreach voice in knot.knot_id.get_voices%>
+				$("#voiceSelect").append($('<option>').attr({"voice":"<%voice.voice%>","variant_id":"/audio/<%voice.recording_id%>.ogg","autx_content":"<%voice.autx_content | replace('"','\\"',g)%>"}).text("<%voice.voice%>"));
+				
+			<%end%>
+			var words={};
+		</script>
+			
+	     <audio onpause="audiotext_pause()" style='position:fixed; bottom:3vh; width: 100px; left:47vw;' class='logos' phrase_id="<%knot.knot_id%>" id="logos_<%knot.knot_id%>" controls>
+			<source id="ogg_<%knot.knot_id%>" src="/audio/<%voice.recording_id%>.ogg" type="audio/ogg">
+			<source id="mp3_<%knot.knot_id%>" src="/audio/<%voice.recording_id%>.mp3" type="audio/mp3">
+			    Your browser does not support the audio format.
+	     </audio>
+
+<script>
+var current_id=<%knot.knot_id%>;
+var timeouts=[];
+var audioDfr=[];
+
+var bgSize = function(el) {
+    var imageUrl = $(el).css('background-image').match(/^url\(["']?(.+?)["']?\)$/);
+    var dfd = new $.Deferred();
+    if (imageUrl) {
+        var image = new Image();
+        image.onload = dfd.resolve;
+        image.onerror = dfd.reject;
+        image.src = imageUrl[1];
+    } else {
+        dfd.reject();
+    }
+
+    return dfd.then(function() {
+	if(this.width > this.height){
+	    newW = $(el).width();
+	    newH = this.height / this.width * newW;
+	}else{
+	    newH = $(el).height();
+	    newW = this.width / this.height * newH;      
+	    if (this.height/this.width > ($(el).height())/($(el).width())) {
+			if ($(".phrase").css('height')!='calc(100vh - 100px)') {
+				$(".phrase").css('height','calc(100vh - 100px)');
+			}
+	    }
+	    else {
+			var solution=this.height/this.width*$(el).width();
+			//console.log("IMM SETTING PHRASE to",solution);
+			$(".phrase").css('height',solution);
+			//console.log("IMM PHRASE",$(".phrase").css('height'));
+	    }
+	}
+		return { width: newW, height: newH };
+	    });
+	};
+
+$(function() {
+	set_voice(<%knot.knot_id%>,voice);
+});
+
+var fragment_started=false;
+
+function loadFolio() {
+	var w,h,d;
+	console.log("loadin folio");
+	console.log(words);
+	for (phrase in words) {
+		bgSize(jQuery('#words_'+phrase)).then(function(bg_size) {
+		w=Math.min(window.innerWidth,bg_size.width);
+		h=Math.min(window.innerHeight,bg_size.height);
+		//h=bg_size.height;
+		//console.log("WWW",$("#words_"+phrase).css('height'),bg_size.height,window.innerHeight);
+		audioDfr[phrase]=$.Deferred();
+		//word_index=0;
+		$("#words_"+phrase).empty();
+                for (let word of words[phrase]) {
+                        $('#words_'+phrase).append('<div style="top:calc(100px + '+((parseFloat(rois[word['id']]['top'])*h)-4)+'px);left:'+((parseFloat(rois[word['id']]['left'])*w)-0)+'px;width:'+parseFloat(0+(rois[word['id']]['width'])*w)+'px;height:'+parseFloat(rois[word['id']]['height'])*h+'px;" class="word" id="'+word['id']+'">'+rois[word['id']]['ocr']+'</div>');
+                        $("#"+word['id']).on('click', function() {
+				stop_all_audio();
+				stop_all_markers();
+				$(this).css('opacity','1');
+                                $("#utterance").html(rois[word['id']]['ocr'].replaceAll(/(\S*\s\S*\s\S*)\s/g,'$1<br>').replaceAll(/([,;:?!"\.])/g,'$1<br>'));
+                                textFit($("#utterance"),{maxFontSize:500});
+                                //play_fragment(word['start'],word['stop'],phrase);
+				    track=$('#logos_'+phrase)[0];
+				    track.currentTime=(parseInt(word['start'])+0)/1000;
+				    console.log(track.playbackRate.value);
+				    fragment_started=true;
+				    track.play();
+				    new Timer(stop_all_audio,(parseInt(word['stop']))-parseInt(word['start']));
+
+                        });
+                }
+
+
+	});
+	}
+}
+
+	$(".log s").on('canplay', function() {
+		audioDfr[$(this).attr('phrase_id')].resolve();
+	});
+
+	$(".logos").on('play', function() {
+		//$(".word").css('background-color','red');
+		var i=0;
+		var start=0;
+		phrase_id=$(this).attr('phrase_id');
+			if (!timeouts.length) {
+				timerConstructor(phrase_id);
+			}
+			else {
+		                for (var i=0; i<timeouts.length; i++) {
+	    	                    timeouts[i].resume();
+                		}
+			}
+});
+/*
+function play_fragment(start,stop,phrase) {
+    track=$('#logos_'+phrase)[0];
+    track.currentTime=(start+250)/1000;
+    console.log(track.playbackRate.value);
+    fragment_started=true;
+    track.play();
+    new Timer(stop_all_audio,(stop)-start);
+    setTimeout(stop_all_markers,100);
+    $(".word").css('opacity','0');
+}
+*/
+	function play_fragment(start,stop,phrase) {
+	    track=$('#logos_'+phrase)[0];
+	    track.currentTime=(start)/1000;
+	    //track.playbackRate.value = 2;
+	    track.play();
+	    new Timer(stop_all_audio,(stop)-start);
+	    stop_all_markers();
+	}
+
+
+function timerConstructor(phrase_id) {
+	var start=0;
+	console.log("constructing"+phrase_id);
+	for (let word of words[phrase_id]) {
+		if (!fragment_started) {
+			console.log("this should not happen at all");
+	                timeouts.push(new Timer(function() {$("#"+word.id).css("opacity","1");}, word.start));
+        	        timeouts.push(new Timer(function() {$("#"+word.id).css("opacity","0");}, word.stop));
+	                timeouts.push(new Timer(function() {$("#utterance").html(word.w.replaceAll(/(\S*\s\S*\s\S*)\s/g,'$1<br>').replaceAll(/([,;:?!"\.])/g,'$1<br>'));textFit($("#utterance"),{maxFontSize:500})}, word.start));
+	                timeouts.push(new Timer(function() {$("#utterance").html()},word.stop));
+		} else {
+    			//fragment_started=false;
+			console.log("this should happen");
+		}
+		start=stop/playbackRate;
+	}
+};
+</script>  
+
+  </div>
+
+<script>
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+	$("#voiceSelect").on('change', function () {
+		stop_all_audio();
+		stop_all_markers();
+		var vs=document.getElementById('voiceSelect');
+		//if mismatch between chosen voice and heard voice occurs, two lines which follow contain a bug
+		var selected=$(vs.options[vs.selectedIndex]);
+		voice=selected.attr('voice');
+		console.log(voice);
+	    //var audio = $("#logos_"+current_id);
+	    //audio[0].play();
+	    //audio[0].oncanplaythrough = audio[0].play();
+
+	});
+
+
+function stop_all_audio() {
+	$('audio').each(function(){
+		  this.pause();
+		  this.currentTime=0;
+	});
+	$(".word").css('opacity','0');
+}
+
+function stop_all_markers() {
+		for (var i=0; i<timeouts.length; i++) {
+		    timeouts[i].stop();
+		}
+		timeouts=[];  
+}
+$( window ).resize(function() {
+    $(".phrase").empty(); 
+    loadFolio();
+});
+</script>
+<%include modules/shiva.tt%> 

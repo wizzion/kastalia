@@ -1,0 +1,28 @@
+
+				<button id="up_button" title="zum überordnetem Thema" style="display:none;">⬆️ </button>
+				<select style="background-color: transparent;" id="topicSelect">
+				<option disabled>Thema</option>
+				<%depth=0%>
+				<%foreach ancestor in knot.knot_name.split('\+\+')-%>
+					<%if ancestor%>
+						<%if depth>0%>
+							<%path="$path++$ancestor"%>
+						<%else%>
+							<%path="$ancestor"%>
+						<%end%>
+						<option class="ancestors" id="level<%depth%>" value="<%path%>" <%if ancestor=='Curriculum'%>disabled<%end%>><%ancestor%></option>
+						<%depth=depth+1%>
+					<%end%>
+				<%end%>
+				</select>
+<script>
+<!--
+$("#up_button").click(function() {
+	window.location.href='/'+$("#level"+($('.ancestors').length-2).toString()).val()<%if template_name=='knot'%>+'/knot'<%end%>;
+});
+-->
+
+$(function() {
+   $("#topicSelect option").last().attr("selected","selected");
+});
+</script>

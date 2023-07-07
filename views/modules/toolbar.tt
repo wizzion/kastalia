@@ -1,0 +1,47 @@
+	<div class="top-right-corner" style="font-size:max(2px,2vh);">
+		<%if template_name=="explore"%>
+			<div class="bottom-left-corner">
+				<button id="refresh">↻</button>
+			</div>
+			<div class="bottom-right-corner">
+				<button id="voicecommand">🎙️</button>
+			</div>
+
+		<%end%>
+		<!--
+		<%if template_name=="paaren"%>
+			<!--Score: <span id="score">0</span>
+			schon gefunden: <span id="found">0</span>
+		<%end%>-->
+	</div>
+
+
+  <div class="top-left-corner" style="width:80%">
+	<div style="float:left"> 
+
+	<button id="hamburger_generic">📖</button><button class="top-left-corner cross" id="cross_generic">❌</button>
+	<%bi=1%>
+	 <%if template_name != "explore"%>
+		<%if template_name != "read" and a.template!="palope"%><a title="lesen" id="read_link" class="left<%bi%><%bi=bi+1%>" href="/<%knot.knot_id%>/read">👄</a><%end%>
+	 	<%if template_name != "play"%><a title="hören" id="play_link" class="left<%bi%><%bi=bi+1%>" href="/<%knot.knot_id%>/play">👂</a><%end%>
+	<%end%>
+	 <%if login%>
+		<%if template_name != "recite"%><a id="recite_link" class="left<%bi%><%bi=bi+1%>" title="recite" href="/<%knot.knot_id%>/recite">📔</a><%end%>
+	<%end%>
+	 <%if template_name != "paaren" and (template_name != "explore" or knot.paaren) %><a id="paaren_link" class="left<%bi%><%bi=bi+1%>" title="paaren" href="/<%knot.knot_id%>/paaren">🎴</a><%end%>
+	 <%if a.HMPL and a.template != "explore"%>
+		<%if template_name != "test"%><a id="test_link" class="left<%bi%><%bi=bi+1%>" title="testen" href="/<%knot.knot_id%>/test">💯</a><%end%>
+		<%if template_name != "learn"%><a id="test_link" class="left<%bi%><%bi=bi+1%>" title="lernen" href="/<%knot.knot_id%>/learn">👩🏼‍💻 </a><%end%>
+	<%end%>
+<!--	 <%if template_name != "arbre"%>
+		<a id="arbre_link" class="left<%bi%><%bi=bi+1%>" title="navigieren" href="/<%knot.knot_id%>/arbre">🕸️</a>
+	<%end%>
+-->
+	<%if a.template=='explore' and template_name != "explore"%>
+		<a id="explore_link" class="left<%bi%><%bi=bi+1%>" title="wählen" href="/<%knot.knot_id%>/explore">⊞</a>
+	<%end%>
+  	<button class="top-left-corner cross" id="cross_generic">❌</button>
+	</div>
+  </div>
+
+
