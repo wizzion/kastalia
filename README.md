@@ -20,3 +20,5 @@ Some domains which already run Kastalia KMS instances.
 
 [Baumhaus Digital](https://baumhaus.digital)
 
+[kastalia.medienhaus](https://kastalia.medienhaus.udk-berlin.de)
+
