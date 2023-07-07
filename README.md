@@ -5,7 +5,9 @@ Kastalia Knowledge Management System
 ./install.sh
 
 # Licence
-Licenced under Wizzion Public Licence. In case of commercial use please contact wizzion@wizzion.com
+PERL and Template Toolkit code licenced under [Wizzion Public Licence]{https://github.com/wizzion/wpl}. 
+
+In case of commercial use please contact wizzion@wizzion.com
 
 # Examples
 Some domains which already run Kastalia KMS instances.
