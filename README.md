@@ -5,7 +5,7 @@ Kastalia Knowledge Management System
 ./install.sh
 
 # Licence
-PERL and Template Toolkit code licenced under [Wizzion Public Licence]{https://github.com/wizzion/wpl}. 
+PERL and Template Toolkit code licenced under [Wizzion Public Licence](https://github.com/wizzion/wpl). 
 
 In case of commercial use please contact wizzion@wizzion.com
 
